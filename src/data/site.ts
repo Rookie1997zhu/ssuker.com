@@ -1,0 +1,133 @@
+export const siteMeta = {
+  brand: 'SSUKER',
+  brandKo: '슈커',
+  tagline: '전기지게차',
+  title: 'SSUKER | 슈커 전기지게차',
+  companyLegal: 'OPTICO CO.,LTD',
+  businessNumber: '480-86-01679',
+  phone: '010-2369-6698',
+  fax: '0508-931-6698',
+  email: 'opticokr@daum.net',
+  copyright: 'COPYRIGHT(C) 2025 슈커. CO.LTD ALL RIGHT RESERVED.',
+}
+
+export const navItems = [
+  { label: 'ABOUT US', to: '/company' },
+  {
+    label: 'PRODUCT',
+    to: '/products',
+    children: [
+      { label: '1.5ton-3ton 보급형', to: '/products/standard' },
+      { label: '1.5ton-3ton 고급형', to: '/products/premium' },
+    ],
+  },
+  { label: 'COUNSEL', to: '/counsel' },
+  { label: 'CONTACT US', to: '/contact' },
+  { label: 'NEWS', to: '/news' },
+] as const
+
+export const heroSlides = [
+  {
+    id: 'slide-1',
+    title: 'Electric Counter balance\nForklift Truck',
+    imageKey: 'hero1' as const,
+  },
+  {
+    id: 'slide-2',
+    title: 'Upgraded 4-wheel\nElectric Forklift',
+    imageKey: 'hero2' as const,
+  },
+  {
+    id: 'slide-3',
+    title: 'Innovative design is\neconomical and practical',
+    imageKey: 'hero3' as const,
+  },
+]
+
+export const heroIndexes = [
+  {
+    key: 'PERFORMANCE',
+    title: 'PERFORMANCE',
+    body: '회전의 부드러움과\n뛰어난 주행 제어 편의성',
+  },
+  {
+    key: 'INNOVATION',
+    title: 'INNOVATION',
+    body: '혁신적인\nAC컨트롤러 시스템',
+  },
+  {
+    key: 'POWER',
+    title: 'POWER SYSTEM',
+    body: '고효율, 완벽한 보호기능,\n내장 속도 센서, 온도 센서',
+  },
+]
+
+export const machineFeatures = [
+  {
+    id: 'comfort',
+    title: 'COMFORT',
+    body: '전사데이터의 효율적인 관리\n및 통합을 위한 솔루션 판매',
+    imageKey: 'machine1' as const,
+  },
+  {
+    id: 'safety',
+    title: 'SAFETY',
+    body: '자동 상승&하강 속도 제한\n하강 버퍼 가능',
+    imageKey: 'machine2' as const,
+  },
+  {
+    id: 'efficiency',
+    title: 'EFFICIENCY',
+    body: '사이드시프터 장착 유압시스템\n효율적인 작업 향상',
+    imageKey: 'machine3' as const,
+  },
+]
+
+export const warrantyItems = [
+  {
+    part: '동력 배터리',
+    years: '3년',
+    hours: '3,000시간',
+  },
+  {
+    part: '전기계통(핵심 부품)',
+    years: '1년',
+    hours: '2,000시간',
+  },
+  {
+    part: '유압계통(핵심 부품)',
+    years: '1년',
+    hours: '2,000시간',
+  },
+]
+
+/** Image registry — keys map to files under src/assets/images */
+export const imageKeys = {
+  logoWhite: 'logo_white.webp',
+  logoColor: 'logo_color.webp',
+  hero1: 'hero_01.webp',
+  hero2: 'hero_02.webp',
+  hero3: 'hero_03.webp',
+  aboutBg: 'about_bg.webp',
+  companyAbout: 'company_about.webp',
+  machine1: 'machine_01.webp',
+  machine2: 'machine_02.webp',
+  machine3: 'machine_03.webp',
+  warrantyBg: 'warranty_bg.webp',
+  customerBg: 'customer_bg.webp',
+  thumbStandard: 'thumb_standard.webp',
+  thumbPremium: 'thumb_premium.webp',
+  standardFront: 'standard_front.webp',
+  standardSide: 'standard_side.webp',
+  standardBack: 'standard_back.webp',
+  premiumFront: 'premium_front.webp',
+  premiumSide: 'premium_side.webp',
+  premiumBack: 'premium_back.webp',
+  sideshift: 'sideshift.webp',
+  newsCard1: 'news_card_01.webp',
+  newsCard2: 'news_card_02.webp',
+  newsCard3: 'news_card_03.webp',
+  newsCard4: 'news_card_04.webp',
+} as const
+
+export type ImageKey = keyof typeof imageKeys

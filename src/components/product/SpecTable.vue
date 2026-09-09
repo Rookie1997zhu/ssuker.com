@@ -34,7 +34,7 @@ const tons = productTonOrder()
 .spec-wrap {
   overflow-x: auto;
   border: 1px solid var(--line);
-  background: rgba(18, 22, 28, 0.55);
+  background: var(--bg-elevated);
   -webkit-overflow-scrolling: touch;
 }
 
@@ -55,7 +55,8 @@ td {
 thead th {
   position: sticky;
   top: 0;
-  background: rgba(2, 56, 122, 0.55);
+  background: rgba(2, 56, 122, 0.08);
+  color: var(--color-navy);
   font-family: var(--font-display);
   letter-spacing: 0.04em;
   white-space: nowrap;
@@ -66,7 +67,7 @@ tbody th {
   left: 0;
   z-index: 1;
   min-width: 11rem;
-  background: rgba(18, 22, 28, 0.96);
+  background: var(--bg-elevated);
   color: var(--text-muted);
   font-weight: 500;
   border-right: 1px solid var(--line);
@@ -78,6 +79,6 @@ td {
 
 tbody tr:hover td,
 tbody tr:hover th {
-  background: rgba(0, 131, 167, 0.08);
+  background: rgba(0, 131, 167, 0.06);
 }
 </style>

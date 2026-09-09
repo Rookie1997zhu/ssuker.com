@@ -68,13 +68,13 @@ const bg = assetUrl('warrantyBg')
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.35;
+  opacity: 0.22;
 }
 
 .warranty__veil {
   background:
-    linear-gradient(90deg, rgba(18, 22, 28, 0.95) 20%, rgba(18, 22, 28, 0.72)),
-    linear-gradient(180deg, rgba(2, 56, 122, 0.35), transparent);
+    linear-gradient(90deg, rgba(245, 247, 250, 0.96) 18%, rgba(245, 247, 250, 0.82)),
+    linear-gradient(180deg, rgba(2, 56, 122, 0.08), transparent);
 }
 
 .warranty__content {
@@ -124,7 +124,8 @@ const bg = assetUrl('warrantyBg')
 
 .warranty__panel {
   border: 1px solid var(--line-strong);
-  background: rgba(18, 22, 28, 0.78);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--shadow-soft);
   padding: var(--space-6);
   display: grid;
   gap: var(--space-5);

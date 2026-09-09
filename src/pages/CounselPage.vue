@@ -192,7 +192,7 @@ async function onSubmit() {
   display: grid;
   gap: var(--space-4);
   background:
-    linear-gradient(160deg, rgba(2, 56, 122, 0.3), transparent 55%),
+    linear-gradient(160deg, rgba(2, 56, 122, 0.06), transparent 55%),
     var(--bg-elevated);
 }
 
@@ -232,7 +232,7 @@ textarea {
   padding: 0.85rem 0.95rem;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
-  background: rgba(0, 0, 0, 0.25);
+  background: var(--bg-panel);
   outline: none;
 }
 

@@ -20,8 +20,8 @@ import SiteFooter from '@/components/layout/SiteFooter.vue'
   display: flex;
   flex-direction: column;
   background:
-    radial-gradient(1200px 600px at 80% -10%, rgba(0, 131, 167, 0.18), transparent 60%),
-    radial-gradient(900px 500px at 0% 20%, rgba(2, 56, 122, 0.35), transparent 55%),
+    radial-gradient(1100px 520px at 85% -8%, rgba(0, 131, 167, 0.08), transparent 58%),
+    radial-gradient(900px 480px at 0% 12%, rgba(2, 56, 122, 0.06), transparent 55%),
     var(--bg-page);
 }
 

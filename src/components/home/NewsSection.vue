@@ -99,7 +99,7 @@ const cover = assetUrl('newsCard1')
   padding: var(--space-7);
   border: 1px solid var(--line-strong);
   background:
-    linear-gradient(120deg, rgba(2, 56, 122, 0.35), rgba(0, 131, 167, 0.12)),
+    linear-gradient(120deg, rgba(2, 56, 122, 0.06), rgba(0, 131, 167, 0.05)),
     var(--bg-elevated);
   display: grid;
   gap: var(--space-3);

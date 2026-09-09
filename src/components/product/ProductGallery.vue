@@ -56,7 +56,7 @@ function select(index: number) {
   width: 100%;
   aspect-ratio: 16 / 11;
   object-fit: contain;
-  background: #0d1117;
+  background: var(--bg-panel);
 }
 
 .gallery__main figcaption {
@@ -64,7 +64,8 @@ function select(index: number) {
   left: 0;
   bottom: 0;
   padding: 0.55rem 0.85rem;
-  background: rgba(18, 22, 28, 0.85);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--text-secondary);
   font-size: var(--text-xs);
   letter-spacing: 0.1em;
 }

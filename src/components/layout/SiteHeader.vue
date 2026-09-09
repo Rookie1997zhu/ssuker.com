@@ -8,7 +8,7 @@ const route = useRoute()
 const open = ref(false)
 const scrolled = ref(false)
 
-const logoSrc = computed(() => assetUrl('logoWhite'))
+const logoSrc = computed(() => assetUrl('logoColor'))
 
 function onScroll() {
   scrolled.value = window.scrollY > 24
@@ -108,7 +108,7 @@ onUnmounted(() => {
 
 .site-header.is-scrolled,
 .site-header.is-open {
-  background: rgba(18, 22, 28, 0.92);
+  background: rgba(255, 255, 255, 0.92);
   border-bottom-color: var(--line);
   backdrop-filter: blur(10px);
 }
@@ -165,7 +165,7 @@ onUnmounted(() => {
 
 .nav__link:hover,
 .nav__link.is-active {
-  color: var(--color-white);
+  color: var(--color-navy);
 }
 
 .nav__sub {
@@ -174,8 +174,9 @@ onUnmounted(() => {
   left: 0;
   min-width: 15rem;
   padding: 0.65rem;
-  background: var(--color-graphite);
+  background: var(--bg-elevated);
   border: 1px solid var(--line);
+  box-shadow: var(--shadow-soft);
   opacity: 0;
   pointer-events: none;
   transform: translateY(6px);
@@ -223,7 +224,7 @@ onUnmounted(() => {
   display: block;
   width: 1.25rem;
   height: 1.5px;
-  background: var(--color-white);
+  background: var(--color-ink);
 }
 
 .mobile-nav {
@@ -260,7 +261,7 @@ onUnmounted(() => {
     position: absolute;
     inset: var(--header-h) 0 auto;
     padding: var(--space-5) 1.25rem var(--space-6);
-    background: rgba(18, 22, 28, 0.96);
+    background: rgba(255, 255, 255, 0.98);
     border-bottom: 1px solid var(--line);
     transform: translateY(-8px);
     opacity: 0;

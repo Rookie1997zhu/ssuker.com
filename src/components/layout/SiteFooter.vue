@@ -62,7 +62,7 @@ import { navItems, siteMeta } from '@/data/site'
   margin-top: var(--space-8);
   padding-top: var(--space-8);
   border-top: 1px solid var(--line);
-  background: linear-gradient(180deg, transparent, rgba(1, 36, 79, 0.35));
+  background: linear-gradient(180deg, transparent, rgba(2, 56, 122, 0.04));
 }
 
 .site-footer__grid {

@@ -102,7 +102,7 @@ const banner = assetUrl('customerBg')
 .quick {
   grid-column: 1 / -1;
   background:
-    linear-gradient(120deg, rgba(2, 56, 122, 0.28), rgba(0, 131, 167, 0.1)),
+    linear-gradient(120deg, rgba(2, 56, 122, 0.05), rgba(0, 131, 167, 0.04)),
     var(--bg-elevated);
 }
 

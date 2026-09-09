@@ -44,8 +44,8 @@ defineProps<{
 
 .page-banner__veil {
   background:
-    linear-gradient(180deg, rgba(18, 22, 28, 0.35), rgba(18, 22, 28, 0.88)),
-    linear-gradient(90deg, rgba(2, 56, 122, 0.45), transparent 55%);
+    linear-gradient(180deg, rgba(245, 247, 250, 0.45), rgba(245, 247, 250, 0.92)),
+    linear-gradient(90deg, rgba(2, 56, 122, 0.14), transparent 55%);
 }
 
 .page-banner__content {
@@ -58,5 +58,6 @@ defineProps<{
 
 .page-banner__content .display {
   font-size: var(--text-xl);
+  color: var(--color-navy);
 }
 </style>

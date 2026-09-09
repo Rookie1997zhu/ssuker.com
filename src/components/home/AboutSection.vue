@@ -68,6 +68,7 @@ const image = assetUrl('companyAbout')
   bottom: 1.25rem;
   padding: 0.45rem 0.8rem;
   background: var(--color-navy);
+  color: var(--color-white);
   font-family: var(--font-display);
   font-size: var(--text-xs);
   letter-spacing: 0.14em;

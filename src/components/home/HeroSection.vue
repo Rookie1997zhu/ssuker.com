@@ -90,8 +90,8 @@ onUnmounted(() => {
 
 .hero__veil {
   background:
-    linear-gradient(180deg, rgba(18, 22, 28, 0.2) 0%, rgba(18, 22, 28, 0.72) 55%, rgba(18, 22, 28, 0.96) 100%),
-    linear-gradient(90deg, rgba(2, 56, 122, 0.45), transparent 50%);
+    linear-gradient(180deg, rgba(245, 247, 250, 0.55) 0%, rgba(245, 247, 250, 0.78) 48%, rgba(245, 247, 250, 0.96) 100%),
+    linear-gradient(90deg, rgba(2, 56, 122, 0.12), transparent 55%);
 }
 
 .hero__content {
@@ -105,6 +105,7 @@ onUnmounted(() => {
 .hero__title {
   font-size: var(--text-hero);
   max-width: 12ch;
+  color: var(--color-navy);
 }
 
 .hero__subtitle {
@@ -123,7 +124,7 @@ onUnmounted(() => {
 .dot {
   width: 2rem;
   height: 2px;
-  background: rgba(255, 255, 255, 0.28);
+  background: rgba(18, 22, 28, 0.2);
 }
 
 .dot.is-active {
@@ -139,7 +140,7 @@ onUnmounted(() => {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   border-top: 1px solid var(--line);
-  background: rgba(18, 22, 28, 0.72);
+  background: rgba(255, 255, 255, 0.88);
   backdrop-filter: blur(8px);
 }
 

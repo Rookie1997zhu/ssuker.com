@@ -81,7 +81,7 @@ const rows = computed(() =>
 <style scoped>
 .spec {
   background:
-    linear-gradient(180deg, rgba(2, 56, 122, 0.18), transparent 40%),
+    linear-gradient(180deg, rgba(2, 56, 122, 0.05), transparent 40%),
     var(--bg-elevated);
   border-block: 1px solid var(--line);
 }
@@ -92,7 +92,7 @@ const rows = computed(() =>
   padding: 0.3rem;
   margin-bottom: var(--space-6);
   border: 1px solid var(--line);
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--bg-panel);
 }
 
 .ton-switch__btn {
@@ -110,7 +110,7 @@ const rows = computed(() =>
 
 .compare {
   border: 1px solid var(--line);
-  background: rgba(18, 22, 28, 0.55);
+  background: var(--bg-elevated);
 }
 
 .compare__head,

@@ -51,11 +51,11 @@ const rows = computed(() =>
           <div class="compare__label">항목</div>
           <div>
             <p class="series-name">보급형</p>
-            <p class="series-ton tabular">{{ activeTon }} ton</p>
+            <p class="series-ton tabular">{{ activeTon }}톤</p>
           </div>
           <div>
             <p class="series-name">고급형</p>
-            <p class="series-ton tabular">{{ activeTon }} ton</p>
+            <p class="series-ton tabular">{{ activeTon }}톤</p>
           </div>
         </div>
 

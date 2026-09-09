@@ -3,12 +3,12 @@ export const siteMeta = {
   brandKo: '슈커',
   tagline: '전기지게차',
   title: 'SSUKER | 슈커 전기지게차',
-  companyLegal: 'OPTICO CO.,LTD',
+  companyLegal: 'OPTICO CO., LTD.',
   businessNumber: '480-86-01679',
   phone: '010-2369-6698',
   fax: '0508-931-6698',
   email: 'opticokr@daum.net',
-  copyright: 'COPYRIGHT(C) 2025 슈커. CO.LTD ALL RIGHT RESERVED.',
+  copyright: 'COPYRIGHT(C) 2025 슈커 CO., LTD. ALL RIGHTS RESERVED.',
 }
 
 export const navItems = [
@@ -29,7 +29,7 @@ export const navItems = [
 export const heroSlides = [
   {
     id: 'slide-1',
-    title: 'Electric Counter balance\nForklift Truck',
+    title: 'Electric Counterbalance\nForklift Truck',
     imageKey: 'hero1' as const,
   },
   {
@@ -66,7 +66,7 @@ export const machineFeatures = [
   {
     id: 'comfort',
     title: 'COMFORT',
-    body: '전사데이터의 효율적인 관리\n및 통합을 위한 솔루션 판매',
+    body: '넓은 시야와 인체공학 설계로\n운전자 피로를 최소화합니다',
     imageKey: 'machine1' as const,
   },
   {

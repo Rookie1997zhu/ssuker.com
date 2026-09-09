@@ -46,7 +46,7 @@ function validate() {
     errors.email = '이메일 형식이 올바르지 않습니다.'
   }
   if (!form.message.trim()) errors.message = '문의 내용을 입력해 주세요.'
-  if (!form.agree) errors.agree = '개인정보 수집에 동의해 주세요.'
+  if (!form.agree) errors.agree = '개인정보 수집 및 이용에 동의해 주세요.'
 
   return Object.keys(errors).length === 0
 }

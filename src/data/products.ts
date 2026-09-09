@@ -66,7 +66,7 @@ const sharedBaseSpecs: SpecRow[] = [
   },
   {
     label: '등판각도',
-    values: { '1.5': '20', '2.0': '20', '2.5': '20', '3.0': '20' },
+    values: { '1.5': '20°', '2.0': '20°', '2.5': '20°', '3.0': '20°' },
   },
   {
     label: '작업시간',
@@ -119,10 +119,10 @@ const sharedBaseSpecs: SpecRow[] = [
   {
     label: '정격 전압',
     values: {
-      '1.5': '60V(80v옵션)',
-      '2.0': '60V(80v옵션)',
-      '2.5': '60V(80v옵션)',
-      '3.0': '60V(80v옵션)',
+      '1.5': '60V (80V 옵션)',
+      '2.0': '60V (80V 옵션)',
+      '2.5': '60V (80V 옵션)',
+      '3.0': '60V (80V 옵션)',
     },
   },
   {
@@ -137,19 +137,19 @@ const sharedBaseSpecs: SpecRow[] = [
   {
     label: '구동모터',
     values: {
-      '1.5': '4kw full AC permanent magnet motor',
-      '2.0': '5kw full AC permanent magnet motor',
-      '2.5': '9kw full AC permanent magnet motor',
-      '3.0': '11kw full AC permanent magnet motor',
+      '1.5': '4kW full AC permanent magnet motor',
+      '2.0': '5kW full AC permanent magnet motor',
+      '2.5': '9kW full AC permanent magnet motor',
+      '3.0': '11kW full AC permanent magnet motor',
     },
   },
   {
     label: '리프팅모터',
     values: {
-      '1.5': '4kw full AC permanent magnet motor',
-      '2.0': '5kw full AC permanent magnet motor',
-      '2.5': '7.5kw full AC permanent magnet motor',
-      '3.0': '10kw full AC permanent magnet motor',
+      '1.5': '4kW full AC permanent magnet motor',
+      '2.0': '5kW full AC permanent magnet motor',
+      '2.5': '7.5kW full AC permanent magnet motor',
+      '3.0': '10kW full AC permanent magnet motor',
     },
   },
   {

@@ -19,7 +19,7 @@ npm run preview
 
 ## GitHub Pages
 
-- `vite.config.ts` 가 CI 환경에서 `base` 를 `/{repo}/` 로 자동 설정합니다.
+- `vite.config.ts` 의 `base` 는 커스텀 도메인(`www.ssuker.co.kr`) 기준으로 `/` 입니다.
 - `.github/workflows/deploy.yml` 이 `main` push 시 Pages 로 배포합니다.
 - 상담 폼 외부 엔드포인트는 `VITE_COUNSEL_ENDPOINT` 로 주입할 수 있습니다. 미설정 시 `mailto` 로 대체됩니다.
 

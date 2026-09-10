@@ -2,11 +2,9 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { fileURLToPath, URL } from 'node:url'
 
-const repo = process.env.GITHUB_REPOSITORY?.split('/')[1]
-const base = process.env.GITHUB_ACTIONS && repo ? `/${repo}/` : '/'
-
+// Custom domain (www.ssuker.co.kr) serves from site root.
 export default defineConfig({
-  base,
+  base: '/',
   plugins: [vue()],
   resolve: {
     alias: {

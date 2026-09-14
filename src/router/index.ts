@@ -24,6 +24,11 @@ const router = createRouter({
       component: () => import('@/pages/PremiumDetailPhotosPage.vue'),
     },
     {
+      path: '/products/standard/details',
+      name: 'product-standard-details',
+      component: () => import('@/pages/StandardDetailPhotosPage.vue'),
+    },
+    {
       path: '/products/:series',
       name: 'product-detail',
       component: () => import('@/pages/ProductDetailPage.vue'),

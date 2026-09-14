@@ -3,6 +3,7 @@ import { computed, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
 import { productDetail } from '@/data/products'
 import { premiumScenePhotos } from '@/data/premiumMedia'
+import { standardScenePhotos } from '@/data/standardMedia'
 import { assetUrl } from '@/utils/assets'
 import PageBanner from '@/components/common/PageBanner.vue'
 import ProductGallery from '@/components/product/ProductGallery.vue'
@@ -17,6 +18,25 @@ const props = defineProps<{
 const router = useRouter()
 const product = computed(() => productDetail(props.series))
 const isPremium = computed(() => product.value?.id === 'premium')
+const hasExtraMedia = computed(
+  () => product.value?.id === 'premium' || product.value?.id === 'standard',
+)
+
+const detailsPath = computed(() =>
+  isPremium.value ? '/products/premium/details' : '/products/standard/details',
+)
+
+const scenePhotos = computed(() =>
+  isPremium.value ? premiumScenePhotos : standardScenePhotos,
+)
+
+const sceneLead = computed(() =>
+  isPremium.value
+    ? '고급형 라인의 실사용 환경을 확인하세요.'
+    : '보급형 라인의 실사용 환경을 확인하세요.',
+)
+
+const sceneAltPrefix = computed(() => (isPremium.value ? '고급형 현장' : '보급형 현장'))
 
 watchEffect(() => {
   if (!product.value) {
@@ -48,7 +68,7 @@ const banner = computed(() =>
           </div>
           <div class="actions">
             <AppButton to="/counsel">상담 요청</AppButton>
-            <AppButton v-if="isPremium" to="/products/premium/details" variant="ghost">
+            <AppButton v-if="hasExtraMedia" :to="detailsPath" variant="ghost">
               세부 사진 보기
             </AppButton>
           </div>
@@ -61,15 +81,15 @@ const banner = computed(() =>
         <SpecTable :series="product" v-reveal />
       </div>
     </section>
-    <section v-if="isPremium" class="section scene-section">
+    <section v-if="hasExtraMedia" class="section scene-section">
       <div class="container">
         <h2 class="display section-title" v-reveal>현장 사진</h2>
-        <p class="scene-lead" v-reveal>고급형 라인의 실사용 환경을 확인하세요.</p>
+        <p class="scene-lead" v-reveal>{{ sceneLead }}</p>
         <PhotoGrid
-          :files="premiumScenePhotos"
+          :files="scenePhotos"
           columns="scene"
           fit="cover"
-          alt-prefix="고급형 현장"
+          :alt-prefix="sceneAltPrefix"
           v-reveal
         />
       </div>

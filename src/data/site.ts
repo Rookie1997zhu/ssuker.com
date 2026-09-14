@@ -53,7 +53,7 @@ export const heroIndexes = [
   {
     key: 'INNOVATION',
     title: 'INNOVATION',
-    body: '혁신적인\nAC컨트롤러 시스템',
+    body: '혁신적인\nAC 컨트롤러 시스템',
   },
   {
     key: 'POWER',
@@ -78,7 +78,7 @@ export const machineFeatures = [
   {
     id: 'efficiency',
     title: 'EFFICIENCY',
-    body: '사이드시프터 장착 유압시스템\n효율적인 작업 향상',
+    body: '사이드시프트 장착 유압시스템\n작업 효율 향상',
     imageKey: 'machine3' as const,
   },
 ]

@@ -71,19 +71,19 @@ const sharedBaseSpecs: SpecRow[] = [
   {
     label: '작업시간',
     values: {
-      '1.5': 'Work continuously for 6-7 hours',
-      '2.0': 'Work continuously for 5-6 hours',
-      '2.5': 'Work continuously for 7-8 hours',
-      '3.0': 'Work continuously for 5-6 hours',
+      '1.5': '연속 작업 6~7시간',
+      '2.0': '연속 작업 5~6시간',
+      '2.5': '연속 작업 7~8시간',
+      '3.0': '연속 작업 5~6시간',
     },
   },
   {
     label: '충전시간',
     values: {
-      '1.5': '220V 8 hours (Smart Fast Charge 옵션)',
-      '2.0': '220V 8 hours (Smart Fast Charge 옵션)',
-      '2.5': '220V 10 hours (Smart Fast Charge 옵션)',
-      '3.0': '220V 8 hours (Smart Fast Charge 옵션)',
+      '1.5': '220V 8시간 (스마트 급속충전 옵션)',
+      '2.0': '220V 8시간 (스마트 급속충전 옵션)',
+      '2.5': '220V 10시간 (스마트 급속충전 옵션)',
+      '3.0': '220V 8시간 (스마트 급속충전 옵션)',
     },
   },
   {
@@ -101,19 +101,19 @@ const sharedBaseSpecs: SpecRow[] = [
   {
     label: '조향모드',
     values: {
-      '1.5': 'Hydraulic microcomputer controller',
-      '2.0': 'Hydraulic microcomputer controller',
-      '2.5': 'Hydraulic microcomputer controller',
-      '3.0': 'Hydraulic microcomputer controller',
+      '1.5': '유압 마이크로컴퓨터 컨트롤러',
+      '2.0': '유압 마이크로컴퓨터 컨트롤러',
+      '2.5': '유압 마이크로컴퓨터 컨트롤러',
+      '3.0': '유압 마이크로컴퓨터 컨트롤러',
     },
   },
   {
     label: '리프팅 높이',
     values: {
-      '1.5': '3000mm(customizable height)',
-      '2.0': '3000mm(customizable height)',
-      '2.5': '3000mm(customizable height)',
-      '3.0': '3000mm(customizable height)',
+      '1.5': '3000mm(높이 맞춤 가능)',
+      '2.0': '3000mm(높이 맞춤 가능)',
+      '2.5': '3000mm(높이 맞춤 가능)',
+      '3.0': '3000mm(높이 맞춤 가능)',
     },
   },
   {
@@ -128,28 +128,28 @@ const sharedBaseSpecs: SpecRow[] = [
   {
     label: '브레이크 방식',
     values: {
-      '1.5': 'Oil brake + manipulator brake',
-      '2.0': 'Oil brake + manipulator brake',
-      '2.5': 'Oil brake + manipulator brake',
-      '3.0': 'Oil brake + manipulator brake',
+      '1.5': '오일 브레이크 + 조작 브레이크',
+      '2.0': '오일 브레이크 + 조작 브레이크',
+      '2.5': '오일 브레이크 + 조작 브레이크',
+      '3.0': '오일 브레이크 + 조작 브레이크',
     },
   },
   {
     label: '구동모터',
     values: {
-      '1.5': '4kW full AC permanent magnet motor',
-      '2.0': '5kW full AC permanent magnet motor',
-      '2.5': '9kW full AC permanent magnet motor',
-      '3.0': '11kW full AC permanent magnet motor',
+      '1.5': '4kW 풀 AC 영구자석 모터',
+      '2.0': '5kW 풀 AC 영구자석 모터',
+      '2.5': '9kW 풀 AC 영구자석 모터',
+      '3.0': '11kW 풀 AC 영구자석 모터',
     },
   },
   {
     label: '리프팅모터',
     values: {
-      '1.5': '4kW full AC permanent magnet motor',
-      '2.0': '5kW full AC permanent magnet motor',
-      '2.5': '7.5kW full AC permanent magnet motor',
-      '3.0': '10kW full AC permanent magnet motor',
+      '1.5': '4kW 풀 AC 영구자석 모터',
+      '2.0': '5kW 풀 AC 영구자석 모터',
+      '2.5': '7.5kW 풀 AC 영구자석 모터',
+      '3.0': '10kW 풀 AC 영구자석 모터',
     },
   },
   {
@@ -171,25 +171,25 @@ const standardHighlights: TonHighlight[] = [
     ton: '1.5',
     title: '1.5 톤 (보급형)',
     runtime: '사용시간 6~7 시간 (200Ah 배터리)',
-    equipment: '사이드 쉬프트 기본 장착',
+    equipment: '사이드시프트 기본 장착',
   },
   {
     ton: '2.0',
     title: '2.0 톤 (보급형)',
     runtime: '사용시간 5~6 시간 (200Ah 배터리)',
-    equipment: '사이드 쉬프트 기본 장착',
+    equipment: '사이드시프트 기본 장착',
   },
   {
     ton: '2.5',
     title: '2.5 톤 (보급형)',
     runtime: '사용시간 7~8 시간 (300Ah 배터리)',
-    equipment: '사이드 쉬프트 + 포크 포지션 기본 장착',
+    equipment: '사이드시프트 + 포크 포지션 기본 장착',
   },
   {
     ton: '3.0',
     title: '3.0 톤 (보급형)',
     runtime: '사용시간 5~6 시간 (300Ah 배터리)',
-    equipment: '사이드 쉬프트 + 포크 포지션 기본 장착',
+    equipment: '사이드시프트 + 포크 포지션 기본 장착',
   },
 ]
 
@@ -198,25 +198,25 @@ const premiumHighlights: TonHighlight[] = [
     ton: '1.5',
     title: '1.5 톤 (고급형)',
     runtime: '사용시간 6~7 시간 (200Ah 배터리)',
-    equipment: '사이드 쉬프트 기본 장착',
+    equipment: '사이드시프트 기본 장착',
   },
   {
     ton: '2.0',
     title: '2.0 톤 (고급형)',
     runtime: '사용시간 5~6 시간 (200Ah 배터리)',
-    equipment: '사이드 쉬프트 기본 장착',
+    equipment: '사이드시프트 기본 장착',
   },
   {
     ton: '2.5',
     title: '2.5 톤 (고급형)',
     runtime: '사용시간 7~8 시간 (280Ah 배터리)',
-    equipment: '사이드 쉬프트 + 포크 포지션 기본 장착',
+    equipment: '사이드시프트 + 포크 포지션 기본 장착',
   },
   {
     ton: '3.0',
     title: '3.0 톤 (고급형)',
     runtime: '사용시간 5~6 시간 (280Ah 배터리)',
-    equipment: '사이드 쉬프트 + 포크 포지션 기본 장착',
+    equipment: '사이드시프트 + 포크 포지션 기본 장착',
   },
 ]
 
@@ -237,10 +237,10 @@ const productSeries: ProductSeries[] = [
     specs: [
       ...sharedBaseSpecs.slice(0, 13),
       withBattery({
-        '1.5': '200AH brand lithium battery',
-        '2.0': '200AH brand lithium battery',
-        '2.5': '300AH brand lithium battery',
-        '3.0': '300AH brand lithium battery',
+        '1.5': '200Ah 브랜드 리튬 배터리',
+        '2.0': '200Ah 브랜드 리튬 배터리',
+        '2.5': '300Ah 브랜드 리튬 배터리',
+        '3.0': '300Ah 브랜드 리튬 배터리',
       }),
       ...sharedBaseSpecs.slice(13),
     ],
@@ -262,10 +262,10 @@ const productSeries: ProductSeries[] = [
     specs: [
       ...sharedBaseSpecs.slice(0, 13),
       withBattery({
-        '1.5': '200AH brand lithium battery',
-        '2.0': '200AH brand lithium battery',
-        '2.5': '280AH brand lithium battery',
-        '3.0': '280AH brand lithium battery',
+        '1.5': '200Ah 브랜드 리튬 배터리',
+        '2.0': '200Ah 브랜드 리튬 배터리',
+        '2.5': '280Ah 브랜드 리튬 배터리',
+        '3.0': '280Ah 브랜드 리튬 배터리',
       }),
       ...sharedBaseSpecs.slice(13),
     ],

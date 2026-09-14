@@ -16,7 +16,7 @@ const features = machineFeatures.map((item) => ({
         eyebrow="MACHINE"
         title="혁신적인 테크놀로지와
 강력한 서비스"
-        description="SSUKER만의 기능을 무한대로 활용할 수 있도록 도와 드립니다."
+        description="SSUKER만의 기능을 충분히 활용할 수 있도록 도와드립니다."
       />
 
       <div class="machine__list">

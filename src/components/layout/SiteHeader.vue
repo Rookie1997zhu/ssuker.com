@@ -53,8 +53,12 @@ onUnmounted(() => {
               {{ item.label }}
             </RouterLink>
             <ul v-if="'children' in item" class="nav__sub">
-              <li v-for="child in item.children" :key="child.to">
-                <RouterLink :to="child.to">{{ child.label }}</RouterLink>
+              <li class="nav__sub-panel">
+                <ul>
+                  <li v-for="child in item.children" :key="child.to">
+                    <RouterLink :to="child.to">{{ child.label }}</RouterLink>
+                  </li>
+                </ul>
               </li>
             </ul>
           </li>
@@ -170,19 +174,42 @@ onUnmounted(() => {
 
 .nav__sub {
   position: absolute;
-  top: calc(100% + 0.75rem);
+  top: 100%;
   left: 0;
   min-width: 15rem;
-  padding: 0.65rem;
-  background: var(--bg-elevated);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow-soft);
+  padding: 0.75rem 0 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
   opacity: 0;
   pointer-events: none;
   transform: translateY(6px);
   transition:
     opacity var(--duration-fast) var(--ease-out),
     transform var(--duration-fast) var(--ease-out);
+  transition-delay: 150ms;
+}
+
+.nav__sub::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 0.75rem;
+}
+
+.nav__sub-panel {
+  padding: 0.65rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-soft);
+}
+
+.nav__sub-panel ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .nav__item.has-children:hover .nav__sub,
@@ -190,6 +217,7 @@ onUnmounted(() => {
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0);
+  transition-delay: 0s;
 }
 
 .nav__sub a {

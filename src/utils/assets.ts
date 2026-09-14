@@ -13,3 +13,7 @@ function resolveByFilename(filename: string): string {
 export function assetUrl(key: ImageKey): string {
   return resolveByFilename(imageKeys[key])
 }
+
+export function imageFileUrl(filename: string): string {
+  return resolveByFilename(filename)
+}

@@ -1,0 +1,31 @@
+export const premiumDetailPhotos = [
+  'premium_detail_01.webp',
+  'premium_detail_02.webp',
+  'premium_detail_03.webp',
+  'premium_detail_04.webp',
+  'premium_detail_05.webp',
+  'premium_detail_06.webp',
+  'premium_detail_07.webp',
+  'premium_detail_08.webp',
+  'premium_detail_09.webp',
+  'premium_detail_10.webp',
+  'premium_detail_11.webp',
+] as const
+
+export const premiumScenePhotos = [
+  'premium_scene_01.webp',
+  'premium_scene_02.webp',
+  'premium_scene_03.webp',
+  'premium_scene_04.webp',
+  'premium_scene_05.webp',
+  'premium_scene_06.webp',
+  'premium_scene_07.webp',
+  'premium_scene_08.webp',
+  'premium_scene_09.webp',
+  'premium_scene_10.webp',
+  'premium_scene_11.webp',
+  'premium_scene_12.webp',
+  'premium_scene_13.webp',
+  'premium_scene_14.webp',
+  'premium_scene_15.webp',
+] as const

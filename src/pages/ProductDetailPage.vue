@@ -2,10 +2,12 @@
 import { computed, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
 import { productDetail } from '@/data/products'
+import { premiumScenePhotos } from '@/data/premiumMedia'
 import { assetUrl } from '@/utils/assets'
 import PageBanner from '@/components/common/PageBanner.vue'
 import ProductGallery from '@/components/product/ProductGallery.vue'
 import SpecTable from '@/components/product/SpecTable.vue'
+import PhotoGrid from '@/components/product/PhotoGrid.vue'
 import AppButton from '@/components/common/AppButton.vue'
 
 const props = defineProps<{
@@ -14,6 +16,7 @@ const props = defineProps<{
 
 const router = useRouter()
 const product = computed(() => productDetail(props.series))
+const isPremium = computed(() => product.value?.id === 'premium')
 
 watchEffect(() => {
   if (!product.value) {
@@ -43,7 +46,12 @@ const banner = computed(() =>
               <p>{{ item.equipment }}</p>
             </article>
           </div>
-          <AppButton to="/counsel">상담 요청</AppButton>
+          <div class="actions">
+            <AppButton to="/counsel">상담 요청</AppButton>
+            <AppButton v-if="isPremium" to="/products/premium/details" variant="ghost">
+              세부 사진 보기
+            </AppButton>
+          </div>
         </div>
       </div>
     </section>
@@ -51,6 +59,19 @@ const banner = computed(() =>
       <div class="container">
         <h2 class="display section-title" v-reveal>SPEC</h2>
         <SpecTable :series="product" v-reveal />
+      </div>
+    </section>
+    <section v-if="isPremium" class="section scene-section">
+      <div class="container">
+        <h2 class="display section-title" v-reveal>현장 사진</h2>
+        <p class="scene-lead" v-reveal>고급형 라인의 실사용 환경을 확인하세요.</p>
+        <PhotoGrid
+          :files="premiumScenePhotos"
+          columns="scene"
+          fit="cover"
+          alt-prefix="고급형 현장"
+          v-reveal
+        />
       </div>
     </section>
   </div>
@@ -104,13 +125,30 @@ const banner = computed(() =>
   font-size: var(--text-sm);
 }
 
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
 .spec-section {
+  padding-top: 0;
+}
+
+.scene-section {
   padding-top: 0;
 }
 
 .section-title {
   margin-bottom: var(--space-5);
   font-size: var(--text-lg);
+}
+
+.scene-lead {
+  margin-top: calc(var(--space-5) * -0.5);
+  margin-bottom: var(--space-5);
+  color: var(--text-secondary);
+  max-width: 36rem;
 }
 
 @media (max-width: 960px) {

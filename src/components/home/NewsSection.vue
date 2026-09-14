@@ -35,7 +35,7 @@ const cover = assetUrl('newsCard1')
       <div class="cta-panel" v-reveal>
         <p class="eyebrow">CONTACT</p>
         <h3 class="display">제품 상담이 필요하신가요?</h3>
-        <p>전화 문의 또는 온라인 상담으로 빠르게 연결해 드립니다.</p>
+        <p>전화 문의 또는 온라인 상담으로 빠르게 연결해드립니다.</p>
         <div class="cta-panel__actions">
           <AppButton to="/counsel">온라인 상담</AppButton>
           <AppButton to="/contact" variant="ghost">오시는 길</AppButton>

@@ -18,10 +18,10 @@ const bg = assetUrl('warrantyBg')
     <div class="container warranty__content">
       <div class="warranty__intro" v-reveal>
         <p class="eyebrow">CUSTOMER CARE</p>
-        <h2 class="display">발빠른 대응으로<br />고객 성공을 이끕니다</h2>
+        <h2 class="display">발 빠른 대응으로<br />안정적인 A/S를 제공합니다</h2>
         <p>
-          SSUKER는 고객이 보고, 이해하고, 문제를 해결하여 비즈니스 성공을 이룰 수 있도록
-          도와드립니다.
+          SSUKER는 제품 도입부터 부품 무상 AS까지, 현장 문의에 신속히 대응하여 장비가 안정적으로
+          운용되도록 지원합니다.
         </p>
         <div class="meta">
           <div>

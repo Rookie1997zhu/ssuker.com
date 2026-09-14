@@ -10,7 +10,7 @@ const figure = assetUrl('companyAbout')
 
 <template>
   <div class="company-page">
-    <PageBanner eyebrow="ABOUT US" title="회사소개" :image="banner" />
+    <PageBanner eyebrow="ABOUT US" title="회사 소개" :image="banner" />
     <section class="section">
       <div class="container company-layout">
         <div class="company-layout__intro" v-reveal>

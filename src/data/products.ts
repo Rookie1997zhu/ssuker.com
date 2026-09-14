@@ -128,14 +128,14 @@ const sharedBaseSpecs: SpecRow[] = [
   {
     label: '브레이크 방식',
     values: {
-      '1.5': '오일 브레이크 + 조작 브레이크',
-      '2.0': '오일 브레이크 + 조작 브레이크',
-      '2.5': '오일 브레이크 + 조작 브레이크',
-      '3.0': '오일 브레이크 + 조작 브레이크',
+      '1.5': '오일 브레이크 + 핸드 브레이크',
+      '2.0': '오일 브레이크 + 핸드 브레이크',
+      '2.5': '오일 브레이크 + 핸드 브레이크',
+      '3.0': '오일 브레이크 + 핸드 브레이크',
     },
   },
   {
-    label: '구동모터',
+    label: '구동 모터',
     values: {
       '1.5': '4kW 풀 AC 영구자석 모터',
       '2.0': '5kW 풀 AC 영구자석 모터',
@@ -144,7 +144,7 @@ const sharedBaseSpecs: SpecRow[] = [
     },
   },
   {
-    label: '리프팅모터',
+    label: '리프팅 모터',
     values: {
       '1.5': '4kW 풀 AC 영구자석 모터',
       '2.0': '5kW 풀 AC 영구자석 모터',
@@ -157,7 +157,7 @@ const sharedBaseSpecs: SpecRow[] = [
     values: { '1.5': 'O', '2.0': 'O', '2.5': 'O', '3.0': 'O' },
   },
   {
-    label: '과전류 방지/저전류차단',
+    label: '과전류 방지/저전류 차단',
     values: { '1.5': 'O', '2.0': 'O', '2.5': 'O', '3.0': 'O' },
   },
 ]
@@ -183,13 +183,13 @@ const standardHighlights: TonHighlight[] = [
     ton: '2.5',
     title: '2.5 톤 (보급형)',
     runtime: '사용시간 7~8 시간 (300Ah 배터리)',
-    equipment: '사이드시프트 + 포크 포지션 기본 장착',
+    equipment: '사이드시프트 + 포크 포지셔너 기본 장착',
   },
   {
     ton: '3.0',
     title: '3.0 톤 (보급형)',
     runtime: '사용시간 5~6 시간 (300Ah 배터리)',
-    equipment: '사이드시프트 + 포크 포지션 기본 장착',
+    equipment: '사이드시프트 + 포크 포지셔너 기본 장착',
   },
 ]
 
@@ -210,13 +210,13 @@ const premiumHighlights: TonHighlight[] = [
     ton: '2.5',
     title: '2.5 톤 (고급형)',
     runtime: '사용시간 7~8 시간 (280Ah 배터리)',
-    equipment: '사이드시프트 + 포크 포지션 기본 장착',
+    equipment: '사이드시프트 + 포크 포지셔너 기본 장착',
   },
   {
     ton: '3.0',
     title: '3.0 톤 (고급형)',
     runtime: '사용시간 5~6 시간 (280Ah 배터리)',
-    equipment: '사이드시프트 + 포크 포지션 기본 장착',
+    equipment: '사이드시프트 + 포크 포지셔너 기본 장착',
   },
 ]
 
@@ -244,7 +244,7 @@ const productSeries: ProductSeries[] = [
       }),
       ...sharedBaseSpecs.slice(13),
     ],
-    compareKeys: ['상차중량', '배터리 사양', '작업시간', '구동모터', '리프팅모터', '회전반경'],
+    compareKeys: ['상차중량', '배터리 사양', '작업시간', '구동 모터', '리프팅 모터', '회전반경'],
   },
   {
     id: 'premium',
@@ -269,7 +269,7 @@ const productSeries: ProductSeries[] = [
       }),
       ...sharedBaseSpecs.slice(13),
     ],
-    compareKeys: ['상차중량', '배터리 사양', '작업시간', '구동모터', '리프팅모터', '회전반경'],
+    compareKeys: ['상차중량', '배터리 사양', '작업시간', '구동 모터', '리프팅 모터', '회전반경'],
   },
 ]
 

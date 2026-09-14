@@ -8,7 +8,7 @@ export const siteMeta = {
   phone: '010-2369-6698',
   fax: '0508-931-6698',
   email: 'opticokr@daum.net',
-  copyright: 'COPYRIGHT(C) 2025 슈커 CO., LTD. ALL RIGHTS RESERVED.',
+  copyright: 'COPYRIGHT(C) 2026 슈커 CO., LTD. ALL RIGHTS RESERVED.',
 }
 
 export const navItems = [
@@ -17,8 +17,8 @@ export const navItems = [
     label: 'PRODUCT',
     to: '/products',
     children: [
-      { label: '1.5ton-3ton 보급형', to: '/products/standard' },
-      { label: '1.5ton-3ton 고급형', to: '/products/premium' },
+      { label: '1.5TON-3TON 보급형', to: '/products/standard' },
+      { label: '1.5TON-3TON 고급형', to: '/products/premium' },
     ],
   },
   { label: 'COUNSEL', to: '/counsel' },
@@ -39,7 +39,7 @@ export const heroSlides = [
   },
   {
     id: 'slide-3',
-    title: 'Innovative design is\neconomical and practical',
+    title: 'Innovative, economical\nand practical design',
     imageKey: 'hero3' as const,
   },
 ]
@@ -72,7 +72,7 @@ export const machineFeatures = [
   {
     id: 'safety',
     title: 'SAFETY',
-    body: '자동 상승&하강 속도 제한\n하강 버퍼 가능',
+    body: '자동 상승&하강 속도 제한\n하강 버퍼 기능',
     imageKey: 'machine2' as const,
   },
   {

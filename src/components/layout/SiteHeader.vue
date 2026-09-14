@@ -161,9 +161,9 @@ onUnmounted(() => {
   display: inline-flex;
   padding-block: 0.5rem;
   font-family: var(--font-display);
-  font-size: var(--text-xs);
+  font-size: var(--text-sm);
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.1em;
   color: var(--text-secondary);
 }
 
@@ -309,6 +309,7 @@ onUnmounted(() => {
     display: block;
     padding: 0.85rem 0;
     font-family: var(--font-display);
+    font-size: var(--text-sm);
     letter-spacing: 0.08em;
     border-bottom: 1px solid var(--line);
   }

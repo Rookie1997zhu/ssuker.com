@@ -4,11 +4,6 @@ import SectionHeading from '@/components/common/SectionHeading.vue'
 import { assetUrl } from '@/utils/assets'
 
 const VIDEO_SRC = '/videos/ssuker-showreel.mp4'
-/** Cleanroom segment only — outdoor start and empty end cut out. */
-const LOOP_START = 33
-const LOOP_END = 62
-const LOOP_DURATION = LOOP_END - LOOP_START
-
 const poster = assetUrl('showreelPoster')
 
 const stageRef = ref<HTMLElement | null>(null)
@@ -24,18 +19,18 @@ const progress = ref(0)
 const hasEntered = ref(false)
 const hasFrame = ref(false)
 const preloadMode = ref<'metadata' | 'auto'>('metadata')
+const duration = ref(0)
 
 const showCenterPlay = computed(() => !isPlaying.value)
 const showPosterCover = computed(() => !hasFrame.value)
 
-function clampLoopTime(time: number) {
-  return Math.min(LOOP_END, Math.max(LOOP_START, time))
-}
-
 function updateProgress() {
   const video = videoRef.value
-  if (!video) return
-  progress.value = Math.min(1, Math.max(0, (video.currentTime - LOOP_START) / LOOP_DURATION))
+  if (!video || !duration.value) {
+    progress.value = 0
+    return
+  }
+  progress.value = Math.min(1, Math.max(0, video.currentTime / duration.value))
 }
 
 function syncPlayingState() {
@@ -47,117 +42,19 @@ function syncPlayingState() {
 function markFrameReady() {
   const video = videoRef.value
   if (!video) return
-  if (
-    !video.seeking &&
-    video.readyState >= 2 &&
-    video.currentTime >= LOOP_START - 0.05 &&
-    video.currentTime < LOOP_END
-  ) {
+  if (!video.seeking && video.readyState >= 2) {
     hasFrame.value = true
   }
 }
 
-function waitForEvent(target: HTMLMediaElement, eventName: string) {
-  return new Promise<void>((resolve) => {
-    const onEvent = () => {
-      target.removeEventListener(eventName, onEvent)
-      resolve()
-    }
-    target.addEventListener(eventName, onEvent)
-  })
-}
-
-function hasBufferedAround(time: number) {
-  const video = videoRef.value
-  if (!video) return false
-  for (let i = 0; i < video.buffered.length; i += 1) {
-    if (video.buffered.start(i) <= time + 0.1 && video.buffered.end(i) >= time + 0.5) {
-      return true
-    }
-  }
-  return false
-}
-
-function findPlayableTimeInLoop() {
-  const video = videoRef.value
-  if (!video) return null
-  for (let i = 0; i < video.buffered.length; i += 1) {
-    const start = Math.max(video.buffered.start(i), LOOP_START)
-    const end = Math.min(video.buffered.end(i), LOOP_END)
-    if (end - start >= 0.75) return start
-  }
-  return null
-}
-
-async function waitForBufferAround(time: number, timeoutMs = 60000) {
-  const startedAt = performance.now()
-  while (performance.now() - startedAt < timeoutMs) {
-    if (hasBufferedAround(time) || findPlayableTimeInLoop() !== null) return true
-    await new Promise<void>((resolve) => {
-      window.setTimeout(resolve, 250)
-    })
-  }
-  return hasBufferedAround(time) || findPlayableTimeInLoop() !== null
-}
-
-async function seekToLoopStart() {
+function onLoadedMetadata() {
   const video = videoRef.value
   if (!video) return
-
-  if (
-    video.currentTime >= LOOP_START &&
-    video.currentTime < LOOP_END &&
-    video.readyState >= 2 &&
-    !video.seeking
-  ) {
-    markFrameReady()
-    return
-  }
-
-  hasFrame.value = false
-
-  const alreadyNearStart = Math.abs(video.currentTime - LOOP_START) < 0.25 && !video.seeking
-  if (!alreadyNearStart) {
-    const seeked = waitForEvent(video, 'seeked')
-    video.currentTime = LOOP_START
-    await Promise.race([
-      seeked,
-      new Promise<void>((resolve) => {
-        window.setTimeout(resolve, 2000)
-      }),
-    ])
-  }
-
-  await waitForBufferAround(LOOP_START)
-
-  const playable = findPlayableTimeInLoop()
-  if (playable !== null && Math.abs(video.currentTime - playable) > 0.35) {
-    const resettled = waitForEvent(video, 'seeked')
-    video.currentTime = playable
-    await Promise.race([
-      resettled,
-      new Promise<void>((resolve) => {
-        window.setTimeout(resolve, 2000)
-      }),
-    ])
-  }
-
-  markFrameReady()
+  duration.value = Number.isFinite(video.duration) ? video.duration : 0
   updateProgress()
 }
 
 function onTimeUpdate() {
-  const video = videoRef.value
-  if (!video) return
-
-  if (video.currentTime >= LOOP_END) {
-    hasFrame.value = false
-    video.currentTime = LOOP_START
-  } else if (video.currentTime < LOOP_START - 0.05) {
-    hasFrame.value = false
-    video.currentTime = LOOP_START
-  }
-
   markFrameReady()
   updateProgress()
 }
@@ -171,8 +68,6 @@ async function tryPlay(options?: { force?: boolean }) {
   }
 
   preloadMode.value = 'auto'
-  await seekToLoopStart()
-
   video.muted = isMuted.value
   try {
     await video.play()
@@ -213,14 +108,14 @@ function toggleMute() {
 function seekFromEvent(event: MouseEvent) {
   const track = progressTrackRef.value
   const video = videoRef.value
-  if (!track || !video) return
+  if (!track || !video || !duration.value) return
 
   const rect = track.getBoundingClientRect()
   if (rect.width <= 0) return
 
   const ratio = Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width))
   hasFrame.value = false
-  video.currentTime = clampLoopTime(LOOP_START + ratio * LOOP_DURATION)
+  video.currentTime = ratio * duration.value
   updateProgress()
 }
 
@@ -250,17 +145,6 @@ onMounted(() => {
   )
 
   if (stageRef.value) observer.observe(stageRef.value)
-
-  // Warm mid-file range requests before the section enters view.
-  const video = videoRef.value
-  if (video) {
-    preloadMode.value = 'auto'
-    const warm = () => {
-      video.currentTime = LOOP_START
-    }
-    if (video.readyState >= 1) warm()
-    else video.addEventListener('loadedmetadata', warm, { once: true })
-  }
 })
 
 onUnmounted(() => {
@@ -305,6 +189,7 @@ watch(isInView, (visible) => {
         muted
         loop
         playsinline
+        @loadedmetadata="onLoadedMetadata"
         @timeupdate="onTimeUpdate"
         @seeked="markFrameReady"
         @loadeddata="markFrameReady"

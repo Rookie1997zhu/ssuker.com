@@ -32,19 +32,39 @@ export const navItems = [
 
 export const heroSlides = [
   {
-    id: 'slide-1',
+    id: 'slide-main',
     title: 'Electric Counterbalance\nForklift Truck',
-    imageKey: 'hero1' as const,
+    imageKey: 'heroMain' as const,
   },
   {
-    id: 'slide-2',
+    id: 'slide-high-1',
     title: 'Upgraded 4-wheel\nElectric Forklift',
-    imageKey: 'hero2' as const,
+    imageKey: 'heroHigh1' as const,
   },
   {
-    id: 'slide-3',
+    id: 'slide-high-2',
+    title: 'Upgraded 4-wheel\nElectric Forklift',
+    imageKey: 'heroHigh2' as const,
+  },
+  {
+    id: 'slide-high-3',
+    title: 'Upgraded 4-wheel\nElectric Forklift',
+    imageKey: 'heroHigh3' as const,
+  },
+  {
+    id: 'slide-normal-1',
     title: 'Innovative, economical\nand practical design',
-    imageKey: 'hero3' as const,
+    imageKey: 'heroNormal1' as const,
+  },
+  {
+    id: 'slide-normal-2',
+    title: 'Innovative, economical\nand practical design',
+    imageKey: 'heroNormal2' as const,
+  },
+  {
+    id: 'slide-normal-3',
+    title: 'Innovative, economical\nand practical design',
+    imageKey: 'heroNormal3' as const,
   },
 ]
 
@@ -112,6 +132,13 @@ export const imageKeys = {
   hero1: 'hero_01.webp',
   hero2: 'hero_02.webp',
   hero3: 'hero_03.webp',
+  heroMain: 'hero_main.webp',
+  heroHigh1: 'hero_high_1.webp',
+  heroHigh2: 'hero_high_2.webp',
+  heroHigh3: 'hero_high_3.webp',
+  heroNormal1: 'hero_normal_1.webp',
+  heroNormal2: 'hero_normal_2.webp',
+  heroNormal3: 'hero_normal_3.webp',
   aboutBg: 'about_bg.webp',
   companyAbout: 'company_about.webp',
   machine1: 'machine_01.webp',

@@ -132,6 +132,7 @@ export const imageKeys = {
   newsCard2: 'news_card_02.webp',
   newsCard3: 'news_card_03.webp',
   newsCard4: 'news_card_04.webp',
+  showreelPoster: 'showreel_poster.webp',
 } as const
 
 export type ImageKey = keyof typeof imageKeys

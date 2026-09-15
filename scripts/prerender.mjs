@@ -11,7 +11,7 @@ const handler = require('serve-handler')
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const root = path.resolve(__dirname, '..')
 const dist = path.join(root, 'dist')
-const siteUrl = 'https://ssuker.co.kr'
+const siteUrl = 'https://www.ssuker.co.kr'
 
 const routes = [
   '/',

@@ -11,7 +11,7 @@ export const siteMeta = {
   phone: '010-2369-6698',
   fax: '0508-931-6698',
   email: 'opticokr@daum.net',
-  siteUrl: 'https://ssuker.co.kr',
+  siteUrl: 'https://www.ssuker.co.kr',
   copyright: 'COPYRIGHT(C) 2026 슈커 CO., LTD. ALL RIGHTS RESERVED.',
 }
 

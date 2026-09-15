@@ -19,7 +19,7 @@ npm run preview
 
 ## GitHub Pages
 
-- `vite.config.ts` 의 `base` 는 커스텀 도메인(`ssuker.co.kr` / `www.ssuker.co.kr`) 기준으로 `/` 입니다.
+- `vite.config.ts` 의 `base` 는 커스텀 도메인(`www.ssuker.co.kr`) 기준으로 `/` 입니다.
 - `.github/workflows/deploy.yml` 이 `main` push 시 Pages 로 배포합니다.
 - 빌드 시 Puppeteer(시스템 Chrome)로 주요 라우트를 프리렌더하고 `sitemap.xml` 을 생성합니다.
 - `/counsel` 은 제출 폼이 아닌 전화·이메일 상담 안내 페이지입니다.

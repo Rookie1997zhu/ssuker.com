@@ -55,7 +55,7 @@ function select(index: number) {
 
         <div class="actions">
           <AppButton to="/products/premium" variant="ghost">고급형으로 돌아가기</AppButton>
-          <AppButton to="/counsel">상담 요청</AppButton>
+          <AppButton to="/counsel">상담 안내</AppButton>
         </div>
       </div>
     </section>

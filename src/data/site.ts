@@ -5,9 +5,13 @@ export const siteMeta = {
   title: 'SSUKER | 슈커 전기지게차',
   companyLegal: 'OPTICO CO., LTD.',
   businessNumber: '480-86-01679',
+  /** 고객 제공 시에만 표시. 비우면 푸터/개인정보 페이지에서 숨김. */
+  representativeName: '',
+  address: '경기도 화성시 동탄대로 646-4 메가비즈타워 B동 1305',
   phone: '010-2369-6698',
   fax: '0508-931-6698',
   email: 'opticokr@daum.net',
+  siteUrl: 'https://ssuker.co.kr',
   copyright: 'COPYRIGHT(C) 2026 슈커 CO., LTD. ALL RIGHTS RESERVED.',
 }
 

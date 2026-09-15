@@ -19,9 +19,20 @@ npm run preview
 
 ## GitHub Pages
 
-- `vite.config.ts` 의 `base` 는 커스텀 도메인(`www.ssuker.co.kr`) 기준으로 `/` 입니다.
+- `vite.config.ts` 의 `base` 는 커스텀 도메인(`ssuker.co.kr` / `www.ssuker.co.kr`) 기준으로 `/` 입니다.
 - `.github/workflows/deploy.yml` 이 `main` push 시 Pages 로 배포합니다.
-- 상담 폼 외부 엔드포인트는 `VITE_COUNSEL_ENDPOINT` 로 주입할 수 있습니다. 미설정 시 `mailto` 로 대체됩니다.
+- 빌드 시 Puppeteer(시스템 Chrome)로 주요 라우트를 프리렌더하고 `sitemap.xml` 을 생성합니다.
+- `/counsel` 은 제출 폼이 아닌 전화·이메일 상담 안내 페이지입니다.
+- 선택 환경 변수(GitHub Actions Variables):
+  - `VITE_GA_MEASUREMENT_ID`
+  - `VITE_GOOGLE_SITE_VERIFICATION`
+  - `VITE_NAVER_SITE_VERIFICATION`
+
+### 배포 후 확인
+
+1. `https://ssuker.co.kr` 와 `https://www.ssuker.co.kr` 인증서/리다이렉트
+2. Google Search Console / Naver 웹마스터도구 에 사이트 등록 후 `https://ssuker.co.kr/sitemap.xml` 제출
+3. GA4 사용 시 전화·메일 클릭 이벤트 확인
 
 ## 기술 메모
 

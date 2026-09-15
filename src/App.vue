@@ -2,6 +2,7 @@
 import { RouterView } from 'vue-router'
 import SiteHeader from '@/components/layout/SiteHeader.vue'
 import SiteFooter from '@/components/layout/SiteFooter.vue'
+import ContactDock from '@/components/layout/ContactDock.vue'
 </script>
 
 <template>
@@ -11,6 +12,7 @@ import SiteFooter from '@/components/layout/SiteFooter.vue'
       <RouterView />
     </main>
     <SiteFooter />
+    <ContactDock />
   </div>
 </template>
 
@@ -27,5 +29,11 @@ import SiteFooter from '@/components/layout/SiteFooter.vue'
 
 .app-main {
   flex: 1;
+}
+
+@media (max-width: 900px) {
+  .app-main {
+    padding-bottom: 3.5rem;
+  }
 }
 </style>

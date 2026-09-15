@@ -6,10 +6,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const dist = path.resolve(__dirname, '..', 'dist')
 
 async function main() {
-  const indexPath = path.join(dist, 'index.html')
-  await fs.copyFile(indexPath, path.join(dist, '404.html'))
   await fs.writeFile(path.join(dist, '.nojekyll'), '')
-  console.log('postbuild: 404.html and .nojekyll ready')
+  console.log('postbuild: .nojekyll ready')
 }
 
 main().catch((error) => {

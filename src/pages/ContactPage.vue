@@ -2,11 +2,20 @@
 import { contactGet } from '@/data/contact'
 import { siteMeta } from '@/data/site'
 import { assetUrl } from '@/utils/assets'
+import { trackEvent } from '@/utils/analytics'
 import PageBanner from '@/components/common/PageBanner.vue'
 import AppButton from '@/components/common/AppButton.vue'
 
 const contact = contactGet()
 const banner = assetUrl('customerBg')
+
+function mapUrl(address: string) {
+  return `https://map.naver.com/v5/search/${encodeURIComponent(address)}`
+}
+
+function onPhoneClick() {
+  trackEvent('click_phone', { location: 'contact_page' })
+}
 </script>
 
 <template>
@@ -20,9 +29,17 @@ const banner = assetUrl('customerBg')
           class="office"
           v-reveal
         >
-          <p class="eyebrow">{{ office.title }}</p>
+          <p class="eyebrow">LOCATION</p>
           <h2 class="display">{{ office.title }}</h2>
           <p>{{ office.address }}</p>
+          <a
+            class="map-link"
+            :href="mapUrl(office.address)"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            네이버 지도에서 길찾기
+          </a>
         </article>
 
         <article class="channels" v-reveal>
@@ -39,10 +56,16 @@ const banner = assetUrl('customerBg')
 
         <aside class="quick" v-reveal>
           <p class="eyebrow">{{ contact.phoneLabel }}</p>
-          <a class="display phone tabular" :href="`tel:${siteMeta.phone}`">{{ siteMeta.phone }}</a>
+          <a
+            class="display phone tabular"
+            :href="`tel:${siteMeta.phone}`"
+            @click="onPhoneClick"
+          >
+            {{ siteMeta.phone }}
+          </a>
           <p class="hours-label">{{ contact.hoursLabel }}</p>
           <p class="hours">{{ contact.hours }}</p>
-          <AppButton to="/counsel">온라인 상담</AppButton>
+          <AppButton to="/counsel">상담 안내</AppButton>
         </aside>
       </div>
     </section>
@@ -71,9 +94,16 @@ const banner = assetUrl('customerBg')
   font-size: var(--text-lg);
 }
 
-.office p:last-child,
+.office p,
 .channels li {
   color: var(--text-secondary);
+}
+
+.map-link {
+  justify-self: start;
+  color: var(--accent-strong);
+  font-size: var(--text-sm);
+  font-weight: 600;
 }
 
 .channels ul {

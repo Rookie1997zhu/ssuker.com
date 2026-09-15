@@ -67,7 +67,7 @@ const banner = computed(() =>
             </article>
           </div>
           <div class="actions">
-            <AppButton to="/counsel">상담 요청</AppButton>
+            <AppButton to="/counsel">상담 안내</AppButton>
             <AppButton v-if="hasExtraMedia" :to="detailsPath" variant="ghost">
               세부 사진 보기
             </AppButton>

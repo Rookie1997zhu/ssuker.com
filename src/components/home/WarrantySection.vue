@@ -46,7 +46,7 @@ const bg = assetUrl('warrantyBg')
           <p class="as-row__years display tabular">{{ item.years }}</p>
           <p class="as-row__hours tabular">또는 {{ item.hours }}</p>
         </div>
-        <AppButton to="/counsel" class="panel-cta">온라인 상담</AppButton>
+        <AppButton to="/counsel" class="panel-cta">상담 안내</AppButton>
       </div>
     </div>
   </section>

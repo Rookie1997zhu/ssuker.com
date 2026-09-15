@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
+import { contactGet } from '@/data/contact'
 import { navItems, siteMeta } from '@/data/site'
+
+const contact = contactGet()
+const hqAddress = contact.offices.find((office) => office.id === 'hq')?.address ?? siteMeta.address
 </script>
 
 <template>
@@ -19,9 +23,17 @@ import { navItems, siteMeta } from '@/data/site'
             <span>상호</span>
             <strong>{{ siteMeta.companyLegal }}</strong>
           </li>
+          <li v-if="siteMeta.representativeName">
+            <span>대표자</span>
+            <strong>{{ siteMeta.representativeName }}</strong>
+          </li>
           <li>
             <span>사업자등록번호</span>
             <strong>{{ siteMeta.businessNumber }}</strong>
+          </li>
+          <li>
+            <span>주소</span>
+            <strong>{{ hqAddress }}</strong>
           </li>
           <li>
             <span>대표번호</span>
@@ -39,6 +51,12 @@ import { navItems, siteMeta } from '@/data/site'
               <a :href="`mailto:${siteMeta.email}`">{{ siteMeta.email }}</a>
             </strong>
           </li>
+          <li>
+            <span>개인정보</span>
+            <strong>
+              <RouterLink to="/privacy">개인정보 처리방침</RouterLink>
+            </strong>
+          </li>
         </ul>
       </div>
 
@@ -47,6 +65,9 @@ import { navItems, siteMeta } from '@/data/site'
         <ul class="sitemap">
           <li v-for="item in navItems" :key="`f-${item.label}`">
             <RouterLink :to="item.to">{{ item.label }}</RouterLink>
+          </li>
+          <li>
+            <RouterLink to="/privacy">PRIVACY</RouterLink>
           </li>
         </ul>
       </div>
@@ -112,6 +133,10 @@ import { navItems, siteMeta } from '@/data/site'
 
 .info-list strong {
   font-weight: 500;
+}
+
+.info-list a {
+  color: var(--accent-strong);
 }
 
 .sitemap {

@@ -28,17 +28,16 @@ onUnmounted(() => {
 
 <template>
   <section class="hero">
-    <div class="hero__media" aria-hidden="true">
-      <Transition name="fade" mode="out-in">
-        <img :key="current.id" :src="imageSrc" alt="" class="hero__img" />
-      </Transition>
-      <div class="hero__veil" />
-    </div>
+    <h1 class="sr-only">SSUKER 전기지게차</h1>
 
-    <div class="container hero__content">
-      <p class="eyebrow">SSUKER ELECTRIC</p>
-      <h1 class="display hero__title">ELECTRIC<br />FORKLIFT</h1>
-      <p class="hero__subtitle">{{ current.title }}</p>
+    <div class="hero__stage">
+      <div class="hero__media" aria-hidden="true">
+        <Transition name="fade" mode="out-in">
+          <img :key="current.id" :src="imageSrc" alt="" class="hero__img" />
+        </Transition>
+        <div class="hero__veil" />
+      </div>
+
       <div class="hero__dots" role="tablist" aria-label="히어로 슬라이드">
         <button
           v-for="(slide, index) in heroSlides"
@@ -67,11 +66,17 @@ onUnmounted(() => {
 
 <style scoped>
 .hero {
-  position: relative;
-  min-height: min(100vh, 920px);
-  display: grid;
-  align-content: end;
+  display: flex;
+  flex-direction: column;
+  min-height: min(72vh, 760px);
   overflow: hidden;
+  background: var(--color-paper);
+}
+
+.hero__stage {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 18rem;
 }
 
 .hero__media,
@@ -81,50 +86,50 @@ onUnmounted(() => {
 }
 
 .hero__img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
-  transform: scale(1.04);
+  /* Mild recovery for high-key whites; keep posters readable, not grey. */
+  filter: brightness(0.96) contrast(1.08) saturate(1.04);
 }
 
 .hero__veil {
-  background:
-    linear-gradient(180deg, rgba(245, 247, 250, 0.55) 0%, rgba(245, 247, 250, 0.78) 48%, rgba(245, 247, 250, 0.96) 100%),
-    linear-gradient(90deg, rgba(2, 56, 122, 0.12), transparent 55%);
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    transparent 72%,
+    rgba(245, 247, 250, 0.35) 100%
+  );
 }
 
-.hero__content {
-  position: relative;
-  z-index: 1;
-  padding-bottom: 8.5rem;
-  display: grid;
-  gap: var(--space-4);
-}
-
-.hero__title {
-  font-size: var(--text-hero);
-  max-width: 12ch;
-  color: var(--color-navy);
-}
-
-.hero__subtitle {
-  max-width: 28rem;
-  color: var(--text-secondary);
-  white-space: pre-line;
-  font-size: var(--text-md);
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
 }
 
 .hero__dots {
+  position: absolute;
+  left: 50%;
+  bottom: 1rem;
+  z-index: 2;
   display: flex;
   gap: 0.55rem;
-  margin-top: var(--space-3);
+  transform: translateX(-50%);
 }
 
 .dot {
   width: 2rem;
   height: 2px;
-  background: rgba(18, 22, 28, 0.2);
+  background: rgba(18, 22, 28, 0.28);
 }
 
 .dot.is-active {
@@ -132,10 +137,7 @@ onUnmounted(() => {
 }
 
 .hero__indexes {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  flex: 0 0 auto;
   z-index: 1;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -180,11 +182,7 @@ onUnmounted(() => {
 
 @media (max-width: 800px) {
   .hero {
-    min-height: 88vh;
-  }
-
-  .hero__content {
-    padding-bottom: 14rem;
+    min-height: 62vh;
   }
 
   .hero__indexes {

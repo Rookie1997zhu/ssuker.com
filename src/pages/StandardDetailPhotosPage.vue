@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { standardDetailPhotos } from '@/data/standardMedia'
-import { imageFileUrl, assetUrl } from '@/utils/assets'
+import { imageFileUrl, imageFileSize } from '@/utils/assets'
 import PageBanner from '@/components/common/PageBanner.vue'
 import AppButton from '@/components/common/AppButton.vue'
 import PhotoGrid from '@/components/product/PhotoGrid.vue'
 
-const banner = assetUrl('thumbStandard')
 const active = ref(0)
 const photos = standardDetailPhotos
 
@@ -17,7 +16,7 @@ function select(index: number) {
 
 <template>
   <div class="standard-details-page">
-    <PageBanner eyebrow="PRODUCT" title="보급형 세부 사진" :image="banner" />
+    <PageBanner eyebrow="PRODUCT" title="보급형 세부 사진" image-key="thumbStandard" />
 
     <section class="section">
       <div class="container">
@@ -26,6 +25,10 @@ function select(index: number) {
             <img
               :src="imageFileUrl(photos[active])"
               :alt="`보급형 세부 ${active + 1}`"
+              decoding="async"
+              fetchpriority="high"
+              :width="imageFileSize(photos[active])?.width"
+              :height="imageFileSize(photos[active])?.height"
             />
             <figcaption>{{ String(active + 1).padStart(2, '0') }} / {{ photos.length }}</figcaption>
           </figure>
@@ -38,7 +41,14 @@ function select(index: number) {
               :class="{ 'is-active': index === active }"
               @click="select(index)"
             >
-              <img :src="imageFileUrl(file)" :alt="`세부 ${index + 1}`" loading="lazy" />
+              <img
+                :src="imageFileUrl(file)"
+                :alt="`세부 ${index + 1}`"
+                loading="lazy"
+                decoding="async"
+                :width="imageFileSize(file)?.width"
+                :height="imageFileSize(file)?.height"
+              />
             </button>
           </div>
         </div>
@@ -135,7 +145,7 @@ function select(index: number) {
   gap: 0.75rem;
 }
 
-@media (max-width: 860px) {
+@media (max-width: 900px) {
   .viewer__thumbs {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }

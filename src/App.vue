@@ -31,9 +31,9 @@ import ContactDock from '@/components/layout/ContactDock.vue'
   flex: 1;
 }
 
-@media (max-width: 900px) {
-  .app-main {
-    padding-bottom: 3.5rem;
+@media (max-width: 960px) {
+  .app-shell {
+    padding-bottom: calc(3.5rem + env(safe-area-inset-bottom, 0px));
   }
 }
 </style>

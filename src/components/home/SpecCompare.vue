@@ -162,7 +162,7 @@ const rows = computed(() =>
   margin-top: var(--space-6);
 }
 
-@media (max-width: 760px) {
+@media (max-width: 900px) {
   .compare__head,
   .compare__row {
     grid-template-columns: 1fr;

@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import { productList } from '@/data/products'
-import { assetUrl } from '@/utils/assets'
+import { assetUrl, assetSize } from '@/utils/assets'
 import PageBanner from '@/components/common/PageBanner.vue'
 
 const products = productList()
-const banner = assetUrl('hero2')
 </script>
 
 <template>
   <div class="products-page">
-    <PageBanner eyebrow="PRODUCT" title="제품 라인업" :image="banner" />
+    <PageBanner eyebrow="PRODUCT" title="제품 라인업" image-key="hero2" />
     <section class="section">
       <div class="container product-grid">
         <RouterLink
@@ -20,7 +19,14 @@ const banner = assetUrl('hero2')
           class="product-card"
           v-reveal
         >
-          <img :src="assetUrl(item.thumbKey)" :alt="item.name" loading="lazy" />
+          <img
+            :src="assetUrl(item.thumbKey)"
+            :alt="item.name"
+            loading="lazy"
+            decoding="async"
+            :width="assetSize(item.thumbKey)?.width"
+            :height="assetSize(item.thumbKey)?.height"
+          />
           <div class="product-card__body">
             <p class="eyebrow">{{ item.nameEn }}</p>
             <h2 class="display">{{ item.name }}</h2>
@@ -71,7 +77,7 @@ const banner = assetUrl('hero2')
   color: var(--text-secondary);
 }
 
-@media (max-width: 800px) {
+@media (max-width: 900px) {
   .product-grid {
     grid-template-columns: 1fr;
   }

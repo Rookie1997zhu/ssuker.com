@@ -2,7 +2,6 @@
 import { computed, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
 import { newsDetail } from '@/data/news'
-import { assetUrl } from '@/utils/assets'
 import PageBanner from '@/components/common/PageBanner.vue'
 import AppButton from '@/components/common/AppButton.vue'
 
@@ -18,13 +17,11 @@ watchEffect(() => {
     router.replace('/news')
   }
 })
-
-const banner = assetUrl('newsCard2')
 </script>
 
 <template>
   <div v-if="item" class="news-detail-page">
-    <PageBanner eyebrow="NEWS" :title="item.title" :image="banner" />
+    <PageBanner eyebrow="NEWS" :title="item.title" image-key="newsCard2" />
     <section class="section">
       <article class="container article" v-reveal>
         <p class="date tabular">{{ item.date }}</p>

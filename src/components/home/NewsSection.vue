@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import { newsList } from '@/data/news'
-import { assetUrl } from '@/utils/assets'
+import { assetUrl, assetSize } from '@/utils/assets'
 import SectionHeading from '@/components/common/SectionHeading.vue'
 import AppButton from '@/components/common/AppButton.vue'
 
 const news = newsList()
 const cover = assetUrl('newsCard1')
+const coverSize = assetSize('newsCard1')
 </script>
 
 <template>
@@ -23,7 +24,14 @@ const cover = assetUrl('newsCard1')
 
       <article v-for="item in news" :key="item.id" class="news-card" v-reveal>
         <RouterLink :to="`/news/${item.id}`" class="news-card__link">
-          <img :src="cover" :alt="item.title" loading="lazy" />
+          <img
+            :src="cover"
+            :alt="item.title"
+            loading="lazy"
+            decoding="async"
+            :width="coverSize?.width"
+            :height="coverSize?.height"
+          />
           <div class="news-card__body">
             <p class="date tabular">{{ item.date }}</p>
             <h3>{{ item.title }}</h3>

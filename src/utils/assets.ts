@@ -1,4 +1,5 @@
 import { imageKeys, type ImageKey } from '@/data/site'
+import { imageDimensions, type ImageDimension } from '@/data/imageDimensions'
 
 const modules = import.meta.glob('../assets/images/*.{webp,png,jpg,jpeg}', {
   eager: true,
@@ -16,4 +17,12 @@ export function assetUrl(key: ImageKey): string {
 
 export function imageFileUrl(filename: string): string {
   return resolveByFilename(filename)
+}
+
+export function imageFileSize(filename: string): ImageDimension | undefined {
+  return imageDimensions[filename]
+}
+
+export function assetSize(key: ImageKey): ImageDimension | undefined {
+  return imageFileSize(imageKeys[key])
 }

@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { machineFeatures } from '@/data/site'
-import { assetUrl } from '@/utils/assets'
+import { assetUrl, assetSize } from '@/utils/assets'
 import SectionHeading from '@/components/common/SectionHeading.vue'
 
 const features = machineFeatures.map((item) => ({
   ...item,
   image: assetUrl(item.imageKey),
+  size: assetSize(item.imageKey),
 }))
 </script>
 
@@ -33,7 +34,14 @@ const features = machineFeatures.map((item) => ({
             <p>{{ item.body }}</p>
           </div>
           <figure class="machine__media">
-            <img :src="item.image" :alt="item.title" loading="lazy" />
+            <img
+              :src="item.image"
+              :alt="item.title"
+              loading="lazy"
+              decoding="async"
+              :width="item.size?.width"
+              :height="item.size?.height"
+            />
           </figure>
         </article>
       </div>
@@ -93,7 +101,7 @@ const features = machineFeatures.map((item) => ({
   object-fit: cover;
 }
 
-@media (max-width: 860px) {
+@media (max-width: 900px) {
   .machine__item,
   .machine__item.is-reverse {
     grid-template-columns: 1fr;

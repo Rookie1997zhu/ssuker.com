@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { heroIndexes, heroSlides } from '@/data/site'
-import { assetUrl } from '@/utils/assets'
+import { assetUrl, assetSize } from '@/utils/assets'
 
 const active = ref(0)
 let timer: number | undefined
 
 const current = computed(() => heroSlides[active.value])
 const imageSrc = computed(() => assetUrl(current.value.imageKey))
+const imageDim = computed(() => assetSize(current.value.imageKey))
 
 function next() {
   active.value = (active.value + 1) % heroSlides.length
@@ -33,7 +34,16 @@ onUnmounted(() => {
     <div class="hero__stage">
       <div class="hero__media" aria-hidden="true">
         <Transition name="fade" mode="out-in">
-          <img :key="current.id" :src="imageSrc" alt="" class="hero__img" />
+          <img
+            :key="current.id"
+            :src="imageSrc"
+            alt=""
+            class="hero__img"
+            decoding="async"
+            fetchpriority="high"
+            :width="imageDim?.width"
+            :height="imageDim?.height"
+          />
         </Transition>
         <div class="hero__veil" />
       </div>
@@ -142,8 +152,7 @@ onUnmounted(() => {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   border-top: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(8px);
+  background: var(--color-white);
 }
 
 .index-item {
@@ -180,7 +189,7 @@ onUnmounted(() => {
   opacity: 0;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 900px) {
   .hero {
     min-height: 62vh;
   }

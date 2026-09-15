@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { imageFileUrl } from '@/utils/assets'
+import { imageFileUrl, imageFileSize } from '@/utils/assets'
 
 const props = defineProps<{
   files: readonly string[]
@@ -16,6 +16,9 @@ const props = defineProps<{
         :src="imageFileUrl(file)"
         :alt="`${props.altPrefix ?? 'SSUKER'} ${index + 1}`"
         loading="lazy"
+        decoding="async"
+        :width="imageFileSize(file)?.width"
+        :height="imageFileSize(file)?.height"
         :class="`fit-${props.fit ?? 'cover'}`"
       />
     </figure>
@@ -58,14 +61,14 @@ const props = defineProps<{
   object-fit: contain;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 900px) {
   .photo-grid.is-scene,
   .photo-grid.is-detail {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 560px) {
+@media (max-width: 600px) {
   .photo-grid.is-scene,
   .photo-grid.is-detail {
     grid-template-columns: 1fr;

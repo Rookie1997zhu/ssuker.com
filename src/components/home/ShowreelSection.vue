@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import SectionHeading from '@/components/common/SectionHeading.vue'
-import { assetUrl } from '@/utils/assets'
+import { assetUrl, assetSize } from '@/utils/assets'
 
 const VIDEO_SRC = '/videos/ssuker-showreel.mp4'
 const poster = assetUrl('showreelPoster')
+const posterSize = assetSize('showreelPoster')
+
+type NetworkConnection = { saveData?: boolean }
 
 const stageRef = ref<HTMLElement | null>(null)
 const videoRef = ref<HTMLVideoElement | null>(null)
@@ -14,15 +17,22 @@ const isInView = ref(false)
 const isPlaying = ref(false)
 const isMuted = ref(true)
 const prefersReducedMotion = ref(false)
+const tapToPlay = ref(false)
 const userPaused = ref(false)
 const progress = ref(0)
 const hasEntered = ref(false)
 const hasFrame = ref(false)
-const preloadMode = ref<'metadata' | 'auto'>('metadata')
+const preloadMode = ref<'none' | 'metadata' | 'auto'>('metadata')
 const duration = ref(0)
 
 const showCenterPlay = computed(() => !isPlaying.value)
 const showPosterCover = computed(() => !hasFrame.value)
+
+function detectTapToPlay() {
+  const compact = window.matchMedia('(max-width: 900px)').matches
+  const connection = (navigator as Navigator & { connection?: NetworkConnection }).connection
+  return compact || Boolean(connection?.saveData)
+}
 
 function updateProgress() {
   const video = videoRef.value
@@ -64,6 +74,7 @@ async function tryPlay(options?: { force?: boolean }) {
   if (!video || userPaused.value) return
   if (!options?.force) {
     if (prefersReducedMotion.value) return
+    if (tapToPlay.value) return
     if (!isInView.value) return
   }
 
@@ -121,13 +132,26 @@ function seekFromEvent(event: MouseEvent) {
 
 let observer: IntersectionObserver | null = null
 let motionQuery: MediaQueryList | null = null
+let compactQuery: MediaQueryList | null = null
 
 function onMotionChange(event: MediaQueryListEvent) {
   prefersReducedMotion.value = event.matches
   if (event.matches) {
     pauseVideo()
-  } else if (isInView.value && !userPaused.value) {
+  } else if (isInView.value && !userPaused.value && !tapToPlay.value) {
     void tryPlay()
+  }
+}
+
+function refreshTapToPlay() {
+  tapToPlay.value = detectTapToPlay()
+  if (tapToPlay.value) {
+    if (preloadMode.value !== 'auto') preloadMode.value = 'none'
+    if (!userPaused.value && videoRef.value && !videoRef.value.paused) {
+      pauseVideo()
+    }
+  } else if (preloadMode.value === 'none') {
+    preloadMode.value = 'metadata'
   }
 }
 
@@ -136,12 +160,16 @@ onMounted(() => {
   prefersReducedMotion.value = motionQuery.matches
   motionQuery.addEventListener('change', onMotionChange)
 
+  compactQuery = window.matchMedia('(max-width: 900px)')
+  refreshTapToPlay()
+  compactQuery.addEventListener('change', refreshTapToPlay)
+
   observer = new IntersectionObserver(
     (entries) => {
       const entry = entries[0]
       isInView.value = Boolean(entry?.isIntersecting)
     },
-    { threshold: 0.35, rootMargin: '200px 0px' },
+    { threshold: 0.35, rootMargin: '0px' },
   )
 
   if (stageRef.value) observer.observe(stageRef.value)
@@ -150,11 +178,16 @@ onMounted(() => {
 onUnmounted(() => {
   observer?.disconnect()
   motionQuery?.removeEventListener('change', onMotionChange)
+  compactQuery?.removeEventListener('change', refreshTapToPlay)
 })
 
 watch(isInView, (visible) => {
   if (visible) {
     hasEntered.value = true
+    if (tapToPlay.value) {
+      if (preloadMode.value !== 'auto') preloadMode.value = 'none'
+      return
+    }
     preloadMode.value = 'auto'
     void tryPlay()
   } else {
@@ -207,6 +240,9 @@ watch(isInView, (visible) => {
         alt=""
         aria-hidden="true"
         draggable="false"
+        decoding="async"
+        :width="posterSize?.width"
+        :height="posterSize?.height"
       />
 
       <div class="showreel__veil showreel__veil--top" aria-hidden="true" />
@@ -319,19 +355,16 @@ watch(isInView, (visible) => {
   object-fit: cover;
 }
 
-.showreel__video {
-  transform: scale(1.06);
-  transition: transform 2400ms var(--ease-out);
-}
-
 .showreel__poster {
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
+  transform: scale(1.06);
+  transition: transform 2400ms var(--ease-out);
 }
 
-.showreel__stage.is-entered .showreel__video {
+.showreel__stage.is-entered .showreel__poster {
   transform: scale(1);
 }
 
@@ -436,9 +469,8 @@ watch(isInView, (visible) => {
   display: grid;
   place-items: center;
   color: var(--color-white);
-  background: rgba(1, 36, 79, 0.55);
+  background: rgba(1, 36, 79, 0.72);
   border: 1px solid rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(10px);
   transition:
     background var(--duration-fast) var(--ease-out),
     transform var(--duration-fast) var(--ease-out);
@@ -461,7 +493,7 @@ watch(isInView, (visible) => {
   margin-left: 0.15rem;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 900px) {
   .showreel__veil--top {
     height: 10%;
   }
@@ -488,12 +520,12 @@ watch(isInView, (visible) => {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .showreel__video {
+  .showreel__poster {
     transform: none;
     transition: none;
   }
 
-  .showreel__stage.is-entered .showreel__video {
+  .showreel__stage.is-entered .showreel__poster {
     transform: none;
   }
 }

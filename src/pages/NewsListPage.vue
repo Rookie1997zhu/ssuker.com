@@ -1,22 +1,29 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import { newsList } from '@/data/news'
-import { assetUrl } from '@/utils/assets'
+import { assetUrl, assetSize } from '@/utils/assets'
 import PageBanner from '@/components/common/PageBanner.vue'
 
 const news = newsList()
-const banner = assetUrl('newsCard4')
 const cover = assetUrl('newsCard1')
+const coverSize = assetSize('newsCard1')
 </script>
 
 <template>
   <div class="news-list-page">
-    <PageBanner eyebrow="NEWS" title="뉴스" :image="banner" />
+    <PageBanner eyebrow="NEWS" title="뉴스" image-key="newsCard4" />
     <section class="section">
       <div class="container list">
         <article v-for="item in news" :key="item.id" class="item" v-reveal>
           <RouterLink :to="`/news/${item.id}`">
-            <img :src="cover" :alt="item.title" loading="lazy" />
+            <img
+              :src="cover"
+              :alt="item.title"
+              loading="lazy"
+              decoding="async"
+              :width="coverSize?.width"
+              :height="coverSize?.height"
+            />
             <div>
               <p class="date tabular">{{ item.date }}</p>
               <h2>{{ item.title }}</h2>
@@ -74,7 +81,7 @@ const cover = assetUrl('newsCard1')
   color: var(--text-secondary);
 }
 
-@media (max-width: 720px) {
+@media (max-width: 600px) {
   .item a {
     grid-template-columns: 1fr;
   }

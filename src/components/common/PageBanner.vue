@@ -1,15 +1,36 @@
 <script setup lang="ts">
-defineProps<{
+import { computed } from 'vue'
+import type { ImageKey } from '@/data/site'
+import { assetUrl, assetSize } from '@/utils/assets'
+
+const props = defineProps<{
   eyebrow: string
   title: string
+  imageKey?: ImageKey
+  /** @deprecated Prefer imageKey so width/height can be resolved. */
   image?: string
 }>()
+
+const imageSrc = computed(() => {
+  if (props.imageKey) return assetUrl(props.imageKey)
+  return props.image
+})
+
+const imageDim = computed(() => (props.imageKey ? assetSize(props.imageKey) : undefined))
 </script>
 
 <template>
   <section class="page-banner">
-    <div v-if="image" class="page-banner__media" aria-hidden="true">
-      <img :src="image" alt="" loading="eager" />
+    <div v-if="imageSrc" class="page-banner__media" aria-hidden="true">
+      <img
+        :src="imageSrc"
+        alt=""
+        loading="eager"
+        decoding="async"
+        fetchpriority="high"
+        :width="imageDim?.width"
+        :height="imageDim?.height"
+      />
     </div>
     <div class="page-banner__veil" aria-hidden="true" />
     <div class="container page-banner__content">

@@ -67,14 +67,14 @@ function onEmailClick() {
   border-color: var(--line);
 }
 
-@media (min-width: 901px) {
+@media (min-width: 961px) {
   .contact-dock {
     right: 1.25rem;
     bottom: 1.5rem;
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 960px) {
   .contact-dock {
     left: 0;
     right: 0;
@@ -84,6 +84,7 @@ function onEmailClick() {
     background: var(--bg-elevated);
     border-top: 1px solid var(--line);
     box-shadow: 0 -8px 24px rgba(15, 23, 42, 0.08);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
   .dock-btn {

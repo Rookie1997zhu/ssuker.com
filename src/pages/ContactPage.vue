@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import { contactGet } from '@/data/contact'
 import { siteMeta } from '@/data/site'
-import { assetUrl } from '@/utils/assets'
 import { trackEvent } from '@/utils/analytics'
 import PageBanner from '@/components/common/PageBanner.vue'
 import AppButton from '@/components/common/AppButton.vue'
 
 const contact = contactGet()
-const banner = assetUrl('customerBg')
 
 function mapUrl(address: string) {
   return `https://map.naver.com/v5/search/${encodeURIComponent(address)}`
@@ -20,7 +18,7 @@ function onPhoneClick() {
 
 <template>
   <div class="contact-page">
-    <PageBanner eyebrow="CONTACT US" title="연락처" :image="banner" />
+    <PageBanner eyebrow="CONTACT US" title="연락처" image-key="customerBg" />
     <section class="section">
       <div class="container contact-grid">
         <article
@@ -152,7 +150,7 @@ function onPhoneClick() {
   margin-bottom: var(--space-3);
 }
 
-@media (max-width: 800px) {
+@media (max-width: 900px) {
   .contact-grid {
     grid-template-columns: 1fr;
   }

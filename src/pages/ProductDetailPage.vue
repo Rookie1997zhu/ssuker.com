@@ -4,7 +4,6 @@ import { useRouter } from 'vue-router'
 import { productDetail } from '@/data/products'
 import { premiumScenePhotos } from '@/data/premiumMedia'
 import { standardScenePhotos } from '@/data/standardMedia'
-import { assetUrl } from '@/utils/assets'
 import PageBanner from '@/components/common/PageBanner.vue'
 import ProductGallery from '@/components/product/ProductGallery.vue'
 import SpecTable from '@/components/product/SpecTable.vue'
@@ -44,14 +43,14 @@ watchEffect(() => {
   }
 })
 
-const banner = computed(() =>
-  product.value?.id === 'premium' ? assetUrl('thumbPremium') : assetUrl('thumbStandard'),
+const bannerKey = computed(() =>
+  product.value?.id === 'premium' ? ('thumbPremium' as const) : ('thumbStandard' as const),
 )
 </script>
 
 <template>
   <div v-if="product" class="detail-page">
-    <PageBanner eyebrow="PRODUCT" :title="product.name" :image="banner" />
+    <PageBanner eyebrow="PRODUCT" :title="product.name" :image-key="bannerKey" />
     <section class="section">
       <div class="container detail-layout">
         <ProductGallery :series="product" v-reveal />
@@ -171,7 +170,7 @@ const banner = computed(() =>
   max-width: 36rem;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 900px) {
   .detail-layout {
     grid-template-columns: 1fr;
   }

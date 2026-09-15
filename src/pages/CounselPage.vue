@@ -1,18 +1,16 @@
 <script setup lang="ts">
 import { contactGet } from '@/data/contact'
 import { siteMeta } from '@/data/site'
-import { assetUrl } from '@/utils/assets'
 import { trackEvent } from '@/utils/analytics'
 import PageBanner from '@/components/common/PageBanner.vue'
 import AppButton from '@/components/common/AppButton.vue'
 
 const contact = contactGet()
-const banner = assetUrl('newsCard3')
 </script>
 
 <template>
   <div class="counsel-page">
-    <PageBanner eyebrow="COUNSEL" title="상담 안내" :image="banner" />
+    <PageBanner eyebrow="COUNSEL" title="상담 안내" image-key="newsCard3" />
     <section class="section">
       <div class="container counsel-layout">
         <div class="intro" v-reveal>

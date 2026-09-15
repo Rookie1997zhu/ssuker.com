@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { companyGet } from '@/data/company'
-import { assetUrl } from '@/utils/assets'
+import { assetUrl, assetSize } from '@/utils/assets'
 import AppButton from '@/components/common/AppButton.vue'
 
 const company = companyGet()
 const image = assetUrl('companyAbout')
+const imageDim = assetSize('companyAbout')
 </script>
 
 <template>
@@ -17,7 +18,14 @@ const image = assetUrl('companyAbout')
         <AppButton to="/company" variant="line">회사 소개 보기</AppButton>
       </div>
       <figure class="about__figure" v-reveal="'right'">
-        <img :src="image" alt="SSUKER company" loading="lazy" />
+        <img
+          :src="image"
+          alt="SSUKER company"
+          loading="lazy"
+          decoding="async"
+          :width="imageDim?.width"
+          :height="imageDim?.height"
+        />
         <figcaption>COUNTER BALANCE · ELECTRIC</figcaption>
       </figure>
     </div>

@@ -1,4 +1,10 @@
 :root {
+  /*
+   * Breakpoints (use these fixed values in @media — CSS vars cannot be used there):
+   * - 960px: shell layout switch (header hamburger / contact dock / footer padding)
+   * - 900px: section column collapse
+   * - 600px: dense grids (photo thumbs, news list)
+   */
   --color-navy: #02387a;
   --color-navy-deep: #01244f;
   --color-cyan: #0083a7;

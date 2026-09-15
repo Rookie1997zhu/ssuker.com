@@ -1,17 +1,25 @@
 <script setup lang="ts">
 import { siteMeta, warrantyItems } from '@/data/site'
 import { contactGet } from '@/data/contact'
-import { assetUrl } from '@/utils/assets'
+import { assetUrl, assetSize } from '@/utils/assets'
 import AppButton from '@/components/common/AppButton.vue'
 
 const contact = contactGet()
 const bg = assetUrl('warrantyBg')
+const bgSize = assetSize('warrantyBg')
 </script>
 
 <template>
   <section class="warranty section">
     <div class="warranty__bg" aria-hidden="true">
-      <img :src="bg" alt="" loading="lazy" />
+      <img
+        :src="bg"
+        alt=""
+        loading="lazy"
+        decoding="async"
+        :width="bgSize?.width"
+        :height="bgSize?.height"
+      />
       <div class="warranty__veil" />
     </div>
 

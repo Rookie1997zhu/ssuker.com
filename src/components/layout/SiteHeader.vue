@@ -2,13 +2,14 @@
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { navItems, siteMeta } from '@/data/site'
-import { assetUrl } from '@/utils/assets'
+import { assetUrl, assetSize } from '@/utils/assets'
 
 const route = useRoute()
 const open = ref(false)
 const scrolled = ref(false)
 
 const logoSrc = computed(() => assetUrl('logoColor'))
+const logoSize = computed(() => assetSize('logoColor'))
 
 function onScroll() {
   scrolled.value = window.scrollY > 24
@@ -32,7 +33,15 @@ onUnmounted(() => {
   <header class="site-header" :class="{ 'is-scrolled': scrolled, 'is-open': open }">
     <div class="container site-header__inner">
       <RouterLink class="brand" to="/" @click="closeMenu">
-        <img v-if="logoSrc" :src="logoSrc" :alt="siteMeta.brand" class="brand__logo" />
+        <img
+          v-if="logoSrc"
+          :src="logoSrc"
+          :alt="siteMeta.brand"
+          class="brand__logo"
+          decoding="async"
+          :width="logoSize?.width"
+          :height="logoSize?.height"
+        />
         <span v-else class="brand__text display">{{ siteMeta.brand }}</span>
         <span class="brand__tag">{{ siteMeta.tagline }}</span>
       </RouterLink>
@@ -106,15 +115,13 @@ onUnmounted(() => {
   background: transparent;
   transition:
     background var(--duration) var(--ease-out),
-    border-color var(--duration) var(--ease-out),
-    backdrop-filter var(--duration) var(--ease-out);
+    border-color var(--duration) var(--ease-out);
 }
 
 .site-header.is-scrolled,
 .site-header.is-open {
-  background: rgba(255, 255, 255, 0.92);
+  background: var(--color-white);
   border-bottom-color: var(--line);
-  backdrop-filter: blur(10px);
 }
 
 .site-header__inner {

@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import { siteMeta } from '@/data/site'
-import { assetUrl } from '@/utils/assets'
 import PageBanner from '@/components/common/PageBanner.vue'
-
-const banner = assetUrl('customerBg')
 </script>
 
 <template>
   <div class="privacy-page">
-    <PageBanner eyebrow="PRIVACY" title="개인정보 처리방침" :image="banner" />
+    <PageBanner eyebrow="PRIVACY" title="개인정보 처리방침" image-key="customerBg" />
     <section class="section">
       <div class="container privacy" v-reveal>
         <p class="lead">

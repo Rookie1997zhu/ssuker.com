@@ -1,13 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import type { ProductSeries } from '@/data/products'
-import { assetUrl } from '@/utils/assets'
+import { assetUrl, assetSize } from '@/utils/assets'
 
 const props = defineProps<{
   series: ProductSeries
 }>()
 
 const active = ref(0)
+
+const activeItem = computed(() => props.series.gallery[active.value])
+const activeSrc = computed(() => assetUrl(activeItem.value.imageKey))
+const activeSize = computed(() => assetSize(activeItem.value.imageKey))
 
 function select(index: number) {
   active.value = index
@@ -18,10 +22,14 @@ function select(index: number) {
   <div class="gallery">
     <figure class="gallery__main">
       <img
-        :src="assetUrl(props.series.gallery[active].imageKey)"
-        :alt="`${props.series.name} ${props.series.gallery[active].label}`"
+        :src="activeSrc"
+        :alt="`${props.series.name} ${activeItem.label}`"
+        decoding="async"
+        fetchpriority="high"
+        :width="activeSize?.width"
+        :height="activeSize?.height"
       />
-      <figcaption>{{ props.series.gallery[active].label }}</figcaption>
+      <figcaption>{{ activeItem.label }}</figcaption>
     </figure>
     <div class="gallery__thumbs" role="list">
       <button
@@ -32,7 +40,14 @@ function select(index: number) {
         :class="{ 'is-active': index === active }"
         @click="select(index)"
       >
-        <img :src="assetUrl(item.imageKey)" :alt="item.label" loading="lazy" />
+        <img
+          :src="assetUrl(item.imageKey)"
+          :alt="item.label"
+          loading="lazy"
+          decoding="async"
+          :width="assetSize(item.imageKey)?.width"
+          :height="assetSize(item.imageKey)?.height"
+        />
       </button>
     </div>
   </div>
@@ -91,5 +106,17 @@ function select(index: number) {
   width: 100%;
   aspect-ratio: 1;
   object-fit: cover;
+}
+
+@media (max-width: 900px) {
+  .gallery__thumbs {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .gallery__thumbs {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 </style>

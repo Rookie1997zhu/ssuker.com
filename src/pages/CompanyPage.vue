@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { companyGet } from '@/data/company'
-import { assetUrl } from '@/utils/assets'
+import { assetUrl, assetSize } from '@/utils/assets'
 import PageBanner from '@/components/common/PageBanner.vue'
 
 const company = companyGet()
-const banner = assetUrl('aboutBg')
 const figure = assetUrl('companyAbout')
+const figureSize = assetSize('companyAbout')
 </script>
 
 <template>
   <div class="company-page">
-    <PageBanner eyebrow="ABOUT US" title="회사 소개" :image="banner" />
+    <PageBanner eyebrow="ABOUT US" title="회사 소개" image-key="aboutBg" />
     <section class="section">
       <div class="container company-layout">
         <div class="company-layout__intro" v-reveal>
@@ -18,7 +18,14 @@ const figure = assetUrl('companyAbout')
           <h2 class="display">{{ company.lead }}</h2>
         </div>
         <figure class="company-layout__figure" v-reveal>
-          <img :src="figure" alt="SSUKER" loading="lazy" />
+          <img
+            :src="figure"
+            alt="SSUKER"
+            loading="lazy"
+            decoding="async"
+            :width="figureSize?.width"
+            :height="figureSize?.height"
+          />
         </figure>
         <div class="company-layout__body" v-reveal>
           <p v-for="(paragraph, index) in company.paragraphs" :key="index">

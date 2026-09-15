@@ -22,8 +22,11 @@ const prefersReducedMotion = ref(false)
 const userPaused = ref(false)
 const progress = ref(0)
 const hasEntered = ref(false)
+const hasFrame = ref(false)
+const preloadMode = ref<'metadata' | 'auto'>('metadata')
 
 const showCenterPlay = computed(() => !isPlaying.value)
+const showPosterCover = computed(() => !hasFrame.value)
 
 function clampLoopTime(time: number) {
   return Math.min(LOOP_END, Math.max(LOOP_START, time))
@@ -41,10 +44,60 @@ function syncPlayingState() {
   isPlaying.value = !video.paused
 }
 
-function onLoadedMetadata() {
+function markFrameReady() {
   const video = videoRef.value
   if (!video) return
+  if (
+    !video.seeking &&
+    video.readyState >= 2 &&
+    video.currentTime >= LOOP_START - 0.05 &&
+    video.currentTime < LOOP_END
+  ) {
+    hasFrame.value = true
+  }
+}
+
+function waitForEvent(target: HTMLMediaElement, eventName: string) {
+  return new Promise<void>((resolve) => {
+    const onEvent = () => {
+      target.removeEventListener(eventName, onEvent)
+      resolve()
+    }
+    target.addEventListener(eventName, onEvent)
+  })
+}
+
+async function seekToLoopStart() {
+  const video = videoRef.value
+  if (!video) return
+
+  const inRange =
+    video.currentTime >= LOOP_START &&
+    video.currentTime < LOOP_END &&
+    video.readyState >= 2 &&
+    !video.seeking
+
+  if (inRange) {
+    markFrameReady()
+    return
+  }
+
+  hasFrame.value = false
+  const seeked = waitForEvent(video, 'seeked')
   video.currentTime = LOOP_START
+  await seeked
+
+  if (video.readyState < 3) {
+    await Promise.race([
+      waitForEvent(video, 'canplay'),
+      waitForEvent(video, 'loadeddata'),
+      new Promise<void>((resolve) => {
+        window.setTimeout(resolve, 8000)
+      }),
+    ])
+  }
+
+  markFrameReady()
   updateProgress()
 }
 
@@ -53,11 +106,14 @@ function onTimeUpdate() {
   if (!video) return
 
   if (video.currentTime >= LOOP_END) {
+    hasFrame.value = false
     video.currentTime = LOOP_START
-  } else if (video.currentTime < LOOP_START) {
+  } else if (video.currentTime < LOOP_START - 0.05) {
+    hasFrame.value = false
     video.currentTime = LOOP_START
   }
 
+  markFrameReady()
   updateProgress()
 }
 
@@ -69,14 +125,14 @@ async function tryPlay(options?: { force?: boolean }) {
     if (!isInView.value) return
   }
 
-  if (video.currentTime < LOOP_START || video.currentTime >= LOOP_END) {
-    video.currentTime = LOOP_START
-  }
+  preloadMode.value = 'auto'
+  await seekToLoopStart()
 
   video.muted = isMuted.value
   try {
     await video.play()
     isPlaying.value = true
+    markFrameReady()
   } catch {
     isPlaying.value = false
   }
@@ -118,6 +174,7 @@ function seekFromEvent(event: MouseEvent) {
   if (rect.width <= 0) return
 
   const ratio = Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width))
+  hasFrame.value = false
   video.currentTime = clampLoopTime(LOOP_START + ratio * LOOP_DURATION)
   updateProgress()
 }
@@ -144,7 +201,7 @@ onMounted(() => {
       const entry = entries[0]
       isInView.value = Boolean(entry?.isIntersecting)
     },
-    { threshold: 0.4 },
+    { threshold: 0.35, rootMargin: '120px 0px' },
   )
 
   if (stageRef.value) observer.observe(stageRef.value)
@@ -158,6 +215,7 @@ onUnmounted(() => {
 watch(isInView, (visible) => {
   if (visible) {
     hasEntered.value = true
+    preloadMode.value = 'auto'
     void tryPlay()
   } else {
     pauseVideo()
@@ -187,14 +245,27 @@ watch(isInView, (visible) => {
         class="showreel__video"
         :src="VIDEO_SRC"
         :poster="poster"
+        :preload="preloadMode"
         muted
         loop
         playsinline
-        preload="metadata"
-        @loadedmetadata="onLoadedMetadata"
         @timeupdate="onTimeUpdate"
+        @seeked="markFrameReady"
+        @loadeddata="markFrameReady"
+        @canplay="markFrameReady"
+        @playing="markFrameReady"
+        @waiting="hasFrame = false"
         @play="syncPlayingState"
         @pause="syncPlayingState"
+      />
+
+      <img
+        v-show="showPosterCover"
+        class="showreel__poster"
+        :src="poster"
+        alt=""
+        aria-hidden="true"
+        draggable="false"
       />
 
       <div class="showreel__veil showreel__veil--top" aria-hidden="true" />
@@ -297,15 +368,26 @@ watch(isInView, (visible) => {
   background: #000;
 }
 
-.showreel__video {
+.showreel__video,
+.showreel__poster {
   display: block;
   width: 100%;
   height: 100%;
   max-height: min(78vh, calc(100vh - 22.5rem));
   aspect-ratio: 16 / 9;
   object-fit: cover;
+}
+
+.showreel__video {
   transform: scale(1.06);
   transition: transform 2400ms var(--ease-out);
+}
+
+.showreel__poster {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
 }
 
 .showreel__stage.is-entered .showreel__video {
@@ -317,7 +399,7 @@ watch(isInView, (visible) => {
   left: 0;
   right: 0;
   pointer-events: none;
-  z-index: 1;
+  z-index: 2;
 }
 
 .showreel__veil--top {
@@ -336,7 +418,7 @@ watch(isInView, (visible) => {
   position: absolute;
   inset: 50% auto auto 50%;
   translate: -50% -50%;
-  z-index: 2;
+  z-index: 3;
   width: 4.75rem;
   height: 4.75rem;
   border-radius: 50%;
@@ -372,7 +454,7 @@ watch(isInView, (visible) => {
   left: var(--space-4);
   right: var(--space-4);
   bottom: var(--space-4);
-  z-index: 2;
+  z-index: 3;
   display: grid;
   gap: var(--space-3);
 }

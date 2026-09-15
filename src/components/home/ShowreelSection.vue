@@ -78,15 +78,26 @@ function hasBufferedAround(time: number) {
   return false
 }
 
+function findPlayableTimeInLoop() {
+  const video = videoRef.value
+  if (!video) return null
+  for (let i = 0; i < video.buffered.length; i += 1) {
+    const start = Math.max(video.buffered.start(i), LOOP_START)
+    const end = Math.min(video.buffered.end(i), LOOP_END)
+    if (end - start >= 0.75) return start
+  }
+  return null
+}
+
 async function waitForBufferAround(time: number, timeoutMs = 60000) {
   const startedAt = performance.now()
   while (performance.now() - startedAt < timeoutMs) {
-    if (hasBufferedAround(time)) return true
+    if (hasBufferedAround(time) || findPlayableTimeInLoop() !== null) return true
     await new Promise<void>((resolve) => {
       window.setTimeout(resolve, 250)
     })
   }
-  return hasBufferedAround(time)
+  return hasBufferedAround(time) || findPlayableTimeInLoop() !== null
 }
 
 async function seekToLoopStart() {
@@ -104,10 +115,33 @@ async function seekToLoopStart() {
   }
 
   hasFrame.value = false
-  const seeked = waitForEvent(video, 'seeked')
-  video.currentTime = LOOP_START
-  await seeked
+
+  const alreadyNearStart = Math.abs(video.currentTime - LOOP_START) < 0.25 && !video.seeking
+  if (!alreadyNearStart) {
+    const seeked = waitForEvent(video, 'seeked')
+    video.currentTime = LOOP_START
+    await Promise.race([
+      seeked,
+      new Promise<void>((resolve) => {
+        window.setTimeout(resolve, 2000)
+      }),
+    ])
+  }
+
   await waitForBufferAround(LOOP_START)
+
+  const playable = findPlayableTimeInLoop()
+  if (playable !== null && Math.abs(video.currentTime - playable) > 0.35) {
+    const resettled = waitForEvent(video, 'seeked')
+    video.currentTime = playable
+    await Promise.race([
+      resettled,
+      new Promise<void>((resolve) => {
+        window.setTimeout(resolve, 2000)
+      }),
+    ])
+  }
+
   markFrameReady()
   updateProgress()
 }

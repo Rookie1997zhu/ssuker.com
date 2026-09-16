@@ -1,25 +1,33 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { heroIndexes, heroSlides } from '@/data/site'
+import { heroIndexes, heroMain, heroPromoMeta, heroPromoSlides } from '@/data/site'
 import { assetUrl, assetSize } from '@/utils/assets'
 
-const active = ref(0)
+const promoActive = ref(0)
 let timer: number | undefined
 
-const current = computed(() => heroSlides[active.value])
-const imageSrc = computed(() => assetUrl(current.value.imageKey))
-const imageDim = computed(() => assetSize(current.value.imageKey))
+const mainSrc = computed(() => assetUrl(heroMain.imageKey))
+const mainDim = computed(() => assetSize(heroMain.imageKey))
 
-function next() {
-  active.value = (active.value + 1) % heroSlides.length
+const currentPromo = computed(() => heroPromoSlides[promoActive.value])
+const promoSrc = computed(() => assetUrl(currentPromo.value.imageKey))
+const promoDim = computed(() => assetSize(currentPromo.value.imageKey))
+
+const promoCountLabel = computed(
+  () =>
+    `${String(promoActive.value + 1).padStart(2, '0')} / ${String(heroPromoSlides.length).padStart(2, '0')}`,
+)
+
+function nextPromo() {
+  promoActive.value = (promoActive.value + 1) % heroPromoSlides.length
 }
 
-function go(index: number) {
-  active.value = index
+function goPromo(index: number) {
+  promoActive.value = index
 }
 
 onMounted(() => {
-  timer = window.setInterval(next, 5600)
+  timer = window.setInterval(nextPromo, 5600)
 })
 
 onUnmounted(() => {
@@ -31,33 +39,53 @@ onUnmounted(() => {
   <section class="hero">
     <h1 class="sr-only">SSUKER 전기지게차</h1>
 
-    <div class="hero__stage">
-      <div class="hero__media" aria-hidden="true">
-        <Transition name="fade" mode="out-in">
-          <img
-            :key="current.id"
-            :src="imageSrc"
-            alt=""
-            class="hero__img"
-            decoding="async"
-            fetchpriority="high"
-            :width="imageDim?.width"
-            :height="imageDim?.height"
-          />
-        </Transition>
-        <div class="hero__veil" />
-      </div>
+    <div class="hero__main" aria-hidden="true">
+      <img
+        :src="mainSrc"
+        alt=""
+        class="hero__img hero__img--main"
+        decoding="async"
+        fetchpriority="high"
+        :width="mainDim?.width"
+        :height="mainDim?.height"
+      />
+    </div>
 
-      <div class="hero__dots" role="tablist" aria-label="히어로 슬라이드">
-        <button
-          v-for="(slide, index) in heroSlides"
-          :key="slide.id"
-          type="button"
-          class="dot"
-          :class="{ 'is-active': index === active }"
-          :aria-label="`슬라이드 ${index + 1}`"
-          @click="go(index)"
-        />
+    <div class="hero__band">
+      <div class="hero__band-inner">
+        <div class="hero__band-head">
+          <p class="eyebrow">{{ heroPromoMeta.eyebrow }}</p>
+          <p class="hero__count tabular">{{ promoCountLabel }}</p>
+        </div>
+
+        <div class="hero__promo">
+          <div class="hero__promo-media" aria-hidden="true">
+            <Transition name="fade" mode="out-in">
+              <img
+                :key="currentPromo.id"
+                :src="promoSrc"
+                alt=""
+                class="hero__img hero__img--promo"
+                decoding="async"
+                :loading="promoActive === 0 ? 'eager' : 'lazy'"
+                :width="promoDim?.width"
+                :height="promoDim?.height"
+              />
+            </Transition>
+          </div>
+        </div>
+
+        <div class="hero__dots" role="tablist" aria-label="프로모션 슬라이드">
+          <button
+            v-for="(slide, index) in heroPromoSlides"
+            :key="slide.id"
+            type="button"
+            class="dot"
+            :class="{ 'is-active': index === promoActive }"
+            :aria-label="`슬라이드 ${index + 1}`"
+            @click="goPromo(index)"
+          />
+        </div>
       </div>
     </div>
 
@@ -78,41 +106,81 @@ onUnmounted(() => {
 .hero {
   display: flex;
   flex-direction: column;
-  min-height: min(72vh, 760px);
   overflow: hidden;
   background: var(--color-paper);
 }
 
-.hero__stage {
+.hero__main {
   position: relative;
-  flex: 1 1 auto;
-  min-height: 18rem;
+  width: 100%;
+  aspect-ratio: 2162 / 727;
+  background: var(--color-paper);
 }
 
-.hero__media,
-.hero__veil {
+.hero__band {
+  padding-block: var(--space-7) var(--space-6);
+  border-top: 1px solid var(--line);
+  background: var(--color-paper);
+}
+
+.hero__band-inner {
+  width: var(--container);
+  margin-inline: auto;
+}
+
+.hero__band-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.hero__count {
+  margin: 0;
+  font-size: var(--text-xs);
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+}
+
+.hero__promo {
+  --promo-max-h: min(62vh, 640px);
+  position: relative;
+  width: min(100%, calc(var(--promo-max-h) * 3 / 2));
+  max-width: 100%;
+  margin-inline: auto;
+  aspect-ratio: 3 / 2;
+  max-height: var(--promo-max-h);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--color-navy-deep);
+  box-shadow: var(--shadow-soft);
+}
+
+.hero__promo-media {
   position: absolute;
   inset: 0;
 }
 
 .hero__img {
-  position: absolute;
-  inset: 0;
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: contain;
   object-position: center;
-  /* Mild recovery for high-key whites; keep posters readable, not grey. */
-  filter: brightness(0.96) contrast(1.08) saturate(1.04);
 }
 
-.hero__veil {
-  pointer-events: none;
-  background: linear-gradient(
-    180deg,
-    transparent 72%,
-    rgba(245, 247, 250, 0.35) 100%
-  );
+.hero__img--main {
+  position: absolute;
+  inset: 0;
+}
+
+.hero__img--promo {
+  position: absolute;
+  inset: 0;
+  /* Mild recovery for high-key whites; keep posters readable, not grey. */
+  filter: brightness(0.98) contrast(1.04) saturate(1.02);
 }
 
 .sr-only {
@@ -127,19 +195,16 @@ onUnmounted(() => {
 }
 
 .hero__dots {
-  position: absolute;
-  left: 50%;
-  bottom: 1rem;
-  z-index: 2;
   display: flex;
+  justify-content: center;
   gap: 0.55rem;
-  transform: translateX(-50%);
+  margin-top: var(--space-4);
 }
 
 .dot {
-  width: 2rem;
+  width: 2.25rem;
   height: 2px;
-  background: rgba(18, 22, 28, 0.28);
+  background: var(--line);
 }
 
 .dot.is-active {
@@ -190,8 +255,12 @@ onUnmounted(() => {
 }
 
 @media (max-width: 900px) {
-  .hero {
-    min-height: 62vh;
+  .hero__band {
+    padding-block: var(--space-6) var(--space-5);
+  }
+
+  .hero__promo {
+    --promo-max-h: min(52vh, 480px);
   }
 
   .hero__indexes {
@@ -205,6 +274,12 @@ onUnmounted(() => {
 
   .index-item:last-child {
     border-bottom: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero__promo {
+    border-radius: var(--radius-md);
   }
 }
 </style>

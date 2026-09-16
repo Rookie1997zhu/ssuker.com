@@ -30,21 +30,27 @@ export const navItems = [
   { label: 'NEWS', to: '/news' },
 ] as const
 
-export const heroSlides = [
-  {
-    id: 'slide-main',
-    title: 'Electric Counterbalance\nForklift Truck',
-    imageKey: 'heroMain' as const,
-  },
+/** Static top hero banner — does not rotate. */
+export const heroMain = {
+  id: 'slide-main',
+  title: 'Electric Counterbalance\nForklift Truck',
+  imageKey: 'heroMain' as const,
+}
+
+/** Light label above the promo carousel band. */
+export const heroPromoMeta = {
+  eyebrow: 'PROMOTION',
+}
+
+/**
+ * Promo carousel under MAIN, in display order:
+ * HIGH 1 → HIGH 3 → NORMAL 1 → NORMAL 2 → HIGH 2 → NORMAL 3
+ */
+export const heroPromoSlides = [
   {
     id: 'slide-high-1',
     title: 'Upgraded 4-wheel\nElectric Forklift',
     imageKey: 'heroHigh1' as const,
-  },
-  {
-    id: 'slide-high-2',
-    title: 'Upgraded 4-wheel\nElectric Forklift',
-    imageKey: 'heroHigh2' as const,
   },
   {
     id: 'slide-high-3',
@@ -60,6 +66,11 @@ export const heroSlides = [
     id: 'slide-normal-2',
     title: 'Innovative, economical\nand practical design',
     imageKey: 'heroNormal2' as const,
+  },
+  {
+    id: 'slide-high-2',
+    title: 'Upgraded 4-wheel\nElectric Forklift',
+    imageKey: 'heroHigh2' as const,
   },
   {
     id: 'slide-normal-3',

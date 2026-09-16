@@ -7,16 +7,30 @@ import { assetUrl, assetSize } from '@/utils/assets'
 const route = useRoute()
 const open = ref(false)
 const scrolled = ref(false)
+const hidden = ref(false)
+let lastY = 0
 
 const logoSrc = computed(() => assetUrl('logoColor'))
 const logoSize = computed(() => assetSize('logoColor'))
 
 function onScroll() {
-  scrolled.value = window.scrollY > 24
+  const y = window.scrollY
+  scrolled.value = y > 24
+
+  if (open.value || y < 160) {
+    hidden.value = false
+  } else if (y - lastY > 8) {
+    hidden.value = true
+  } else if (lastY - y > 8) {
+    hidden.value = false
+  }
+
+  lastY = y
 }
 
 function closeMenu() {
   open.value = false
+  hidden.value = false
 }
 
 onMounted(() => {
@@ -30,7 +44,10 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <header class="site-header" :class="{ 'is-scrolled': scrolled, 'is-open': open }">
+  <header
+    class="site-header"
+    :class="{ 'is-scrolled': scrolled, 'is-open': open, 'is-hidden': hidden && !open }"
+  >
     <div class="container site-header__inner">
       <RouterLink class="brand" to="/" @click="closeMenu">
         <img
@@ -115,7 +132,12 @@ onUnmounted(() => {
   background: transparent;
   transition:
     background var(--duration) var(--ease-out),
-    border-color var(--duration) var(--ease-out);
+    border-color var(--duration) var(--ease-out),
+    transform var(--duration) var(--ease-out);
+}
+
+.site-header.is-hidden {
+  transform: translateY(-100%);
 }
 
 .site-header.is-scrolled,

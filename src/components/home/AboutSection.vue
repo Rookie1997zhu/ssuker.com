@@ -1,23 +1,36 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { companyGet } from '@/data/company'
 import { assetUrl, assetSize } from '@/utils/assets'
+import { useParallax } from '@/composables/useParallax'
 import AppButton from '@/components/common/AppButton.vue'
 
 const company = companyGet()
 const image = assetUrl('companyAbout')
 const imageDim = assetSize('companyAbout')
+const figureRef = ref<HTMLElement | null>(null)
+
+useParallax(figureRef, { amplitude: 60 })
 </script>
 
 <template>
   <section class="about section">
     <div class="container about__grid">
-      <div class="about__copy" v-reveal="'left'">
-        <p class="eyebrow">{{ company.eyebrow }}</p>
-        <h2 class="display about__title">{{ company.headline }}</h2>
-        <p class="about__lead">{{ company.lead }}</p>
-        <AppButton to="/company" variant="line">회사 소개 보기</AppButton>
+      <div class="about__copy">
+        <p class="eyebrow" v-reveal="{ dir: 'left', delay: 0 }">{{ company.eyebrow }}</p>
+        <h2 class="display about__title" v-reveal="{ dir: 'left', delay: 100 }">
+          {{ company.headline }}
+        </h2>
+        <p class="about__lead" v-reveal="{ dir: 'left', delay: 200 }">{{ company.lead }}</p>
+        <div v-reveal="{ dir: 'left', delay: 300 }">
+          <AppButton to="/company" variant="line">회사 소개 보기</AppButton>
+        </div>
       </div>
-      <figure class="about__figure" v-reveal="'right'">
+      <figure
+        ref="figureRef"
+        class="about__figure"
+        v-reveal="{ dir: 'right', delay: 100 }"
+      >
         <img
           :src="image"
           alt="SSUKER company"
@@ -61,6 +74,7 @@ const imageDim = assetSize('companyAbout')
 .about__figure {
   position: relative;
   margin: 0;
+  --parallax-y: 0px;
 }
 
 .about__figure img {
@@ -68,6 +82,8 @@ const imageDim = assetSize('companyAbout')
   aspect-ratio: 4 / 5;
   object-fit: cover;
   filter: saturate(0.9);
+  transform: translateY(var(--parallax-y));
+  will-change: transform;
 }
 
 .about__figure figcaption {
@@ -89,10 +105,17 @@ const imageDim = assetSize('companyAbout')
 
   .about__figure img {
     aspect-ratio: 16 / 10;
+    transform: none;
   }
 
   .about__figure figcaption {
     left: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about__figure img {
+    transform: none;
   }
 }
 </style>

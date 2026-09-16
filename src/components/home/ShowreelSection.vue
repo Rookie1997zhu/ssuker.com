@@ -2,6 +2,8 @@
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import SectionHeading from '@/components/common/SectionHeading.vue'
 import { assetUrl, assetSize } from '@/utils/assets'
+import { showreelUi } from '@/data/site'
+import { useReducedMotion } from '@/composables/useReducedMotion'
 
 const VIDEO_SRC = '/videos/ssuker-showreel.mp4'
 const poster = assetUrl('showreelPoster')
@@ -16,7 +18,8 @@ const progressTrackRef = ref<HTMLElement | null>(null)
 const isInView = ref(false)
 const isPlaying = ref(false)
 const isMuted = ref(true)
-const prefersReducedMotion = ref(false)
+const prefersReducedMotion = useReducedMotion()
+const isFullscreen = ref(false)
 const tapToPlay = ref(false)
 const userPaused = ref(false)
 const progress = ref(0)
@@ -120,6 +123,25 @@ function toggleMute() {
   if (video) video.muted = isMuted.value
 }
 
+async function toggleFullscreen() {
+  const stage = stageRef.value
+  if (!stage) return
+
+  try {
+    if (document.fullscreenElement) {
+      await document.exitFullscreen()
+      return
+    }
+    await stage.requestFullscreen()
+  } catch {
+    /* Fullscreen may be blocked by the browser. */
+  }
+}
+
+function onFullscreenChange() {
+  isFullscreen.value = document.fullscreenElement === stageRef.value
+}
+
 function seekFromEvent(event: MouseEvent) {
   const track = progressTrackRef.value
   const video = videoRef.value
@@ -135,18 +157,8 @@ function seekFromEvent(event: MouseEvent) {
 }
 
 let observer: IntersectionObserver | null = null
-let motionQuery: MediaQueryList | null = null
 let hoverQuery: MediaQueryList | null = null
 let pointerQuery: MediaQueryList | null = null
-
-function onMotionChange(event: MediaQueryListEvent) {
-  prefersReducedMotion.value = event.matches
-  if (event.matches) {
-    pauseVideo()
-  } else if (isInView.value && !userPaused.value && !tapToPlay.value) {
-    void tryPlay()
-  }
-}
 
 function refreshTapToPlay() {
   const wasTap = tapToPlay.value
@@ -165,15 +177,12 @@ function refreshTapToPlay() {
 }
 
 onMounted(() => {
-  motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-  prefersReducedMotion.value = motionQuery.matches
-  motionQuery.addEventListener('change', onMotionChange)
-
   hoverQuery = window.matchMedia('(hover: none)')
   pointerQuery = window.matchMedia('(pointer: coarse)')
   refreshTapToPlay()
   hoverQuery.addEventListener('change', refreshTapToPlay)
   pointerQuery.addEventListener('change', refreshTapToPlay)
+  document.addEventListener('fullscreenchange', onFullscreenChange)
 
   observer = new IntersectionObserver(
     (entries) => {
@@ -188,9 +197,17 @@ onMounted(() => {
 
 onUnmounted(() => {
   observer?.disconnect()
-  motionQuery?.removeEventListener('change', onMotionChange)
   hoverQuery?.removeEventListener('change', refreshTapToPlay)
   pointerQuery?.removeEventListener('change', refreshTapToPlay)
+  document.removeEventListener('fullscreenchange', onFullscreenChange)
+})
+
+watch(prefersReducedMotion, (reduced) => {
+  if (reduced) {
+    pauseVideo()
+  } else if (isInView.value && !userPaused.value && !tapToPlay.value) {
+    void tryPlay()
+  }
 })
 
 watch(isInView, (visible) => {
@@ -224,36 +241,38 @@ watch(isInView, (visible) => {
       class="showreel__stage"
       :class="{ 'is-entered': hasEntered && !prefersReducedMotion }"
     >
-      <video
-        ref="videoRef"
-        class="showreel__video"
-        :src="VIDEO_SRC"
-        :poster="poster"
-        :preload="preloadMode"
-        muted
-        loop
-        playsinline
-        @loadedmetadata="onLoadedMetadata"
-        @timeupdate="onTimeUpdate"
-        @seeked="markFrameReady"
-        @loadeddata="markFrameReady"
-        @canplay="markFrameReady"
-        @playing="markFrameReady"
-        @play="syncPlayingState"
-        @pause="syncPlayingState"
-      />
+      <div class="showreel__media">
+        <video
+          ref="videoRef"
+          class="showreel__video"
+          :src="VIDEO_SRC"
+          :poster="poster"
+          :preload="preloadMode"
+          muted
+          loop
+          playsinline
+          @loadedmetadata="onLoadedMetadata"
+          @timeupdate="onTimeUpdate"
+          @seeked="markFrameReady"
+          @loadeddata="markFrameReady"
+          @canplay="markFrameReady"
+          @playing="markFrameReady"
+          @play="syncPlayingState"
+          @pause="syncPlayingState"
+        />
 
-      <img
-        v-show="showPosterCover"
-        class="showreel__poster"
-        :src="poster"
-        alt=""
-        aria-hidden="true"
-        draggable="false"
-        decoding="async"
-        :width="posterSize?.width"
-        :height="posterSize?.height"
-      />
+        <img
+          v-show="showPosterCover"
+          class="showreel__poster"
+          :src="poster"
+          alt=""
+          aria-hidden="true"
+          draggable="false"
+          decoding="async"
+          :width="posterSize?.width"
+          :height="posterSize?.height"
+        />
+      </div>
 
       <div class="showreel__veil showreel__veil--top" aria-hidden="true" />
       <div class="showreel__veil showreel__veil--bottom" aria-hidden="true" />
@@ -262,7 +281,7 @@ watch(isInView, (visible) => {
         v-if="showCenterPlay"
         type="button"
         class="showreel__center-play"
-        aria-label="동영상 재생"
+        :aria-label="showreelUi.play"
         @click="togglePlay"
       >
         <span class="showreel__center-play-ring" aria-hidden="true" />
@@ -280,7 +299,7 @@ watch(isInView, (visible) => {
           :aria-valuemin="0"
           :aria-valuemax="100"
           :aria-valuenow="Math.round(progress * 100)"
-          aria-label="재생 위치"
+          :aria-label="showreelUi.seek"
           @click="seekFromEvent"
         >
           <div class="showreel__progress-fill" :style="{ width: `${progress * 100}%` }" />
@@ -290,7 +309,7 @@ watch(isInView, (visible) => {
           <button
             type="button"
             class="showreel__control"
-            :aria-label="isPlaying ? '일시정지' : '재생'"
+            :aria-label="isPlaying ? showreelUi.pause : showreelUi.play"
             @click="togglePlay"
           >
             <svg v-if="isPlaying" class="showreel__icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -304,7 +323,7 @@ watch(isInView, (visible) => {
           <button
             type="button"
             class="showreel__control"
-            :aria-label="isMuted ? '소리 켜기' : '음소거'"
+            :aria-label="isMuted ? showreelUi.unmute : showreelUi.mute"
             @click="toggleMute"
           >
             <svg v-if="isMuted" class="showreel__icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -316,6 +335,25 @@ watch(isInView, (visible) => {
             <svg v-else class="showreel__icon" viewBox="0 0 24 24" aria-hidden="true">
               <path
                 d="M4 10v4h3.2L12 18.5V5.5L7.2 10H4zm10.2-2.1a5.2 5.2 0 0 1 0 8.2l-1.2-1.5a3.2 3.2 0 0 0 0-5.2l1.2-1.5zm2.1-2.4a8.4 8.4 0 0 1 0 13l-1.3-1.5a6.4 6.4 0 0 0 0-10l1.3-1.5z"
+                fill="currentColor"
+              />
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="showreel__control"
+            :aria-label="isFullscreen ? showreelUi.exitFullscreen : showreelUi.fullscreen"
+            @click="toggleFullscreen"
+          >
+            <svg v-if="!isFullscreen" class="showreel__icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M7 3H3v4h2V5h2V3zm10 0v2h2v2h2V3h-4zM5 17H3v4h4v-2H5v-2zm14 2h-2v2h4v-4h-2v2z"
+                fill="currentColor"
+              />
+            </svg>
+            <svg v-else class="showreel__icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M9 3v2H5v4H3V3h6zm12 0v6h-2V5h-4V3h6zM5 15v4h4v2H3v-6h2zm16 0v6h-6v-2h4v-4h2z"
                 fill="currentColor"
               />
             </svg>
@@ -358,6 +396,17 @@ watch(isInView, (visible) => {
   opacity: 1;
 }
 
+.showreel__media {
+  position: absolute;
+  inset: 0;
+  transform: scale(0.96);
+  transition: transform 1200ms var(--ease-out);
+}
+
+.showreel__stage.is-entered .showreel__media {
+  transform: scale(1);
+}
+
 .showreel__video,
 .showreel__poster {
   display: block;
@@ -365,6 +414,7 @@ watch(isInView, (visible) => {
   height: 100%;
   min-height: 12rem;
   object-fit: cover;
+  transition: transform var(--duration-slow) var(--ease-out);
 }
 
 .showreel__poster {
@@ -378,6 +428,17 @@ watch(isInView, (visible) => {
 
 .showreel__stage.is-entered .showreel__poster {
   transform: scale(1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .showreel__stage:hover .showreel__video,
+  .showreel__stage:hover .showreel__poster {
+    transform: scale(1.03);
+  }
+
+  .showreel__stage.is-entered:hover .showreel__poster {
+    transform: scale(1.03);
+  }
 }
 
 .showreel__veil {
@@ -532,13 +593,16 @@ watch(isInView, (visible) => {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .showreel__poster {
+  .showreel__media,
+  .showreel__stage.is-entered .showreel__media,
+  .showreel__video,
+  .showreel__poster,
+  .showreel__stage.is-entered .showreel__poster,
+  .showreel__stage:hover .showreel__video,
+  .showreel__stage:hover .showreel__poster,
+  .showreel__stage.is-entered:hover .showreel__poster {
     transform: none;
     transition: none;
-  }
-
-  .showreel__stage.is-entered .showreel__poster {
-    transform: none;
   }
 }
 </style>

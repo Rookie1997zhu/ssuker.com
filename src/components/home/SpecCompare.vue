@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onUnmounted, ref, watch } from 'vue'
 import {
   productCompareValue,
   productList,
@@ -8,11 +8,18 @@ import {
 } from '@/data/products'
 import SectionHeading from '@/components/common/SectionHeading.vue'
 import AppButton from '@/components/common/AppButton.vue'
+import { useReducedMotion } from '@/composables/useReducedMotion'
 
 const tons = productTonOrder()
 const seriesList = productList()
 const activeTon = ref<TonKey>('2.5')
 const compareLabels = seriesList[0]?.compareKeys ?? []
+const prefersReducedMotion = useReducedMotion()
+
+const seriesLabels = {
+  standard: '보급형',
+  premium: '고급형',
+} as const
 
 const rows = computed(() =>
   compareLabels.map((label) => ({
@@ -21,6 +28,85 @@ const rows = computed(() =>
     premium: productCompareValue('premium', activeTon.value, label),
   })),
 )
+
+type ParsedValue = { num: number; suffix: string } | null
+
+function parseMetric(raw: string): ParsedValue {
+  const match = raw.trim().match(/^([\d,]+(?:\.\d+)?)(.*)$/)
+  if (!match) return null
+  const num = Number(match[1].replace(/,/g, ''))
+  if (!Number.isFinite(num)) return null
+  const suffix = match[2] ?? ''
+  if (!/(kg|Ah|kW|mm)/i.test(suffix)) return null
+  return { num, suffix }
+}
+
+function formatMetric(num: number, suffix: string) {
+  return `${Math.round(num).toLocaleString('en-US')}${suffix}`
+}
+
+const displayStandard = ref<string[]>([])
+const displayPremium = ref<string[]>([])
+let animFrame = 0
+
+function syncDisplays(immediate = false) {
+  const nextStd = rows.value.map((row) => row.standard)
+  const nextPrem = rows.value.map((row) => row.premium)
+
+  if (immediate || prefersReducedMotion.value || !displayStandard.value.length) {
+    displayStandard.value = nextStd
+    displayPremium.value = nextPrem
+    return
+  }
+
+  const prevStd = [...displayStandard.value]
+  const prevPrem = [...displayPremium.value]
+  if (animFrame) window.cancelAnimationFrame(animFrame)
+
+  const begin = performance.now()
+  const duration = 280
+
+  function tick(now: number) {
+    const t = Math.min(1, (now - begin) / duration)
+    const ease = 1 - (1 - t) ** 3
+
+    displayStandard.value = nextStd.map((next, i) => {
+      const from = parseMetric(prevStd[i] ?? '')
+      const to = parseMetric(next)
+      if (!from || !to) return next
+      return formatMetric(from.num + (to.num - from.num) * ease, to.suffix)
+    })
+
+    displayPremium.value = nextPrem.map((next, i) => {
+      const from = parseMetric(prevPrem[i] ?? '')
+      const to = parseMetric(next)
+      if (!from || !to) return next
+      return formatMetric(from.num + (to.num - from.num) * ease, to.suffix)
+    })
+
+    if (t < 1) {
+      animFrame = window.requestAnimationFrame(tick)
+    } else {
+      animFrame = 0
+      displayStandard.value = nextStd
+      displayPremium.value = nextPrem
+    }
+  }
+
+  animFrame = window.requestAnimationFrame(tick)
+}
+
+watch(
+  rows,
+  () => {
+    syncDisplays()
+  },
+  { immediate: true },
+)
+
+onUnmounted(() => {
+  if (animFrame) window.cancelAnimationFrame(animFrame)
+})
 </script>
 
 <template>
@@ -47,27 +133,37 @@ const rows = computed(() =>
       </div>
 
       <div class="compare" v-reveal>
-        <div class="compare__head">
-          <div class="compare__label">항목</div>
-          <div>
-            <p class="series-name">보급형</p>
-            <p class="series-ton tabular">{{ activeTon }}톤</p>
-          </div>
-          <div>
-            <p class="series-name">고급형</p>
-            <p class="series-ton tabular">{{ activeTon }}톤</p>
-          </div>
-        </div>
+        <Transition name="spec-swap" mode="out-in">
+          <div :key="activeTon" class="compare__body">
+            <div class="compare__head">
+              <div class="compare__label">항목</div>
+              <div>
+                <p class="series-name">{{ seriesLabels.standard }}</p>
+                <p class="series-ton tabular">{{ activeTon }}톤</p>
+              </div>
+              <div>
+                <p class="series-name">{{ seriesLabels.premium }}</p>
+                <p class="series-ton tabular">{{ activeTon }}톤</p>
+              </div>
+            </div>
 
-        <div
-          v-for="row in rows"
-          :key="row.label"
-          class="compare__row"
-        >
-          <div class="compare__label">{{ row.label }}</div>
-          <div class="compare__value tabular">{{ row.standard }}</div>
-          <div class="compare__value tabular is-accent">{{ row.premium }}</div>
-        </div>
+            <div
+              v-for="(row, index) in rows"
+              :key="row.label"
+              class="compare__row"
+            >
+              <div class="compare__label">{{ row.label }}</div>
+              <div class="compare__value tabular">
+                <span class="compare__mobile-tag">{{ seriesLabels.standard }}</span>
+                {{ displayStandard[index] }}
+              </div>
+              <div class="compare__value tabular is-accent">
+                <span class="compare__mobile-tag">{{ seriesLabels.premium }}</span>
+                {{ displayPremium[index] }}
+              </div>
+            </div>
+          </div>
+        </Transition>
       </div>
 
       <div class="spec__actions">
@@ -111,6 +207,7 @@ const rows = computed(() =>
 .compare {
   border: 1px solid var(--line);
   background: var(--bg-elevated);
+  overflow: hidden;
 }
 
 .compare__head,
@@ -155,11 +252,45 @@ const rows = computed(() =>
   color: var(--accent-strong);
 }
 
+.compare__mobile-tag {
+  display: none;
+}
+
 .spec__actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
   margin-top: var(--space-6);
+}
+
+.spec-swap-enter-active,
+.spec-swap-leave-active {
+  transition:
+    opacity 240ms var(--ease-out),
+    transform 240ms var(--ease-out);
+}
+
+.spec-swap-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.spec-swap-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spec-swap-enter-active,
+  .spec-swap-leave-active {
+    transition: none;
+  }
+
+  .spec-swap-enter-from,
+  .spec-swap-leave-to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 @media (max-width: 900px) {
@@ -171,6 +302,14 @@ const rows = computed(() =>
 
   .compare__head > div:first-child {
     display: none;
+  }
+
+  .compare__mobile-tag {
+    display: inline;
+    margin-right: 0.45rem;
+    color: var(--text-muted);
+    font-size: var(--text-xs);
+    letter-spacing: 0.08em;
   }
 }
 </style>

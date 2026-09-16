@@ -5,6 +5,7 @@ import { assetUrl, assetSize } from '@/utils/assets'
 
 const promoActive = ref(0)
 const promoDir = ref<'next' | 'prev'>('next')
+const pausedByHover = ref(false)
 let timer: number | undefined
 const PROMO_INTERVAL_MS = 5600
 
@@ -21,8 +22,16 @@ const promoCountLabel = computed(
     `${String(promoActive.value + 1).padStart(2, '0')} / ${String(heroPromoSlides.length).padStart(2, '0')}`,
 )
 
+function clearPromoTimer() {
+  if (timer) {
+    window.clearInterval(timer)
+    timer = undefined
+  }
+}
+
 function startPromoTimer() {
-  if (timer) window.clearInterval(timer)
+  clearPromoTimer()
+  if (pausedByHover.value) return
   timer = window.setInterval(nextPromo, PROMO_INTERVAL_MS)
 }
 
@@ -40,12 +49,23 @@ function goPromo(index: number) {
   startPromoTimer()
 }
 
+function onPromoEnter() {
+  if (!window.matchMedia('(hover: hover)').matches) return
+  pausedByHover.value = true
+  clearPromoTimer()
+}
+
+function onPromoLeave() {
+  pausedByHover.value = false
+  startPromoTimer()
+}
+
 onMounted(() => {
   startPromoTimer()
 })
 
 onUnmounted(() => {
-  if (timer) window.clearInterval(timer)
+  clearPromoTimer()
 })
 </script>
 
@@ -72,19 +92,36 @@ onUnmounted(() => {
           <p class="hero__count tabular">{{ promoCountLabel }}</p>
         </div>
 
-        <div class="hero__promo">
+        <div
+          class="hero__progress"
+          :class="{ 'is-paused': pausedByHover }"
+          aria-hidden="true"
+        >
+          <span
+            :key="promoActive"
+            class="hero__progress-bar"
+            :style="{ animationDuration: `${PROMO_INTERVAL_MS}ms` }"
+          />
+        </div>
+
+        <div
+          class="hero__promo"
+          @mouseenter="onPromoEnter"
+          @mouseleave="onPromoLeave"
+        >
           <div class="hero__promo-media" aria-hidden="true">
             <Transition :name="promoSlideName">
-              <img
-                :key="currentPromo.id"
-                :src="promoSrc"
-                alt=""
-                class="hero__img hero__img--promo"
-                decoding="async"
-                :loading="promoActive === 0 ? 'eager' : 'lazy'"
-                :width="promoDim?.width"
-                :height="promoDim?.height"
-              />
+              <div :key="currentPromo.id" class="hero__promo-slide">
+                <img
+                  :src="promoSrc"
+                  alt=""
+                  class="hero__img hero__img--promo"
+                  decoding="async"
+                  :loading="promoActive === 0 ? 'eager' : 'lazy'"
+                  :width="promoDim?.width"
+                  :height="promoDim?.height"
+                />
+              </div>
             </Transition>
           </div>
         </div>
@@ -105,9 +142,10 @@ onUnmounted(() => {
 
     <div class="hero__indexes">
       <div
-        v-for="item in heroIndexes"
+        v-for="(item, index) in heroIndexes"
         :key="item.key"
         class="index-item"
+        v-reveal="{ delay: index * 100 }"
       >
         <p class="index-item__key">{{ item.title }}</p>
         <p class="index-item__body">{{ item.body }}</p>
@@ -147,7 +185,7 @@ onUnmounted(() => {
   align-items: baseline;
   justify-content: space-between;
   gap: var(--space-4);
-  margin-bottom: var(--space-5);
+  margin-bottom: var(--space-3);
 }
 
 .hero__count {
@@ -155,6 +193,36 @@ onUnmounted(() => {
   font-size: var(--text-xs);
   letter-spacing: 0.12em;
   color: var(--text-muted);
+}
+
+.hero__progress {
+  height: 2px;
+  margin-bottom: var(--space-5);
+  overflow: hidden;
+  background: var(--line);
+}
+
+.hero__progress-bar {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: var(--accent-strong);
+  animation-name: hero-progress;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+.hero__progress.is-paused .hero__progress-bar {
+  animation-play-state: paused;
+}
+
+@keyframes hero-progress {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
 }
 
 .hero__promo {
@@ -178,6 +246,11 @@ onUnmounted(() => {
   overflow: hidden;
 }
 
+.hero__promo-slide {
+  position: absolute;
+  inset: 0;
+}
+
 .hero__img {
   display: block;
   width: 100%;
@@ -194,8 +267,15 @@ onUnmounted(() => {
 .hero__img--promo {
   position: absolute;
   inset: 0;
-  /* Mild recovery for high-key whites; keep posters readable, not grey. */
   filter: brightness(0.98) contrast(1.04) saturate(1.02);
+  transform: scale(1.03);
+  animation: hero-kenburns var(--duration-slow) var(--ease-out) forwards;
+}
+
+@keyframes hero-kenburns {
+  to {
+    transform: scale(1);
+  }
 }
 
 .sr-only {
@@ -283,6 +363,16 @@ onUnmounted(() => {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .hero__progress-bar {
+    animation: none;
+    width: 100%;
+  }
+
+  .hero__img--promo {
+    animation: none;
+    transform: none;
+  }
+
   .slide-next-enter-active,
   .slide-next-leave-active,
   .slide-prev-enter-active,

@@ -122,19 +122,36 @@ export const warrantyItems = [
   {
     part: '동력 배터리',
     years: '3년',
+    yearsValue: 3,
     hours: '3,000시간',
+    hoursValue: 3000,
   },
   {
     part: '전기계통(핵심 부품)',
     years: '1년',
+    yearsValue: 1,
     hours: '2,000시간',
+    hoursValue: 2000,
   },
   {
     part: '유압계통(핵심 부품)',
     years: '1년',
+    yearsValue: 1,
     hours: '2,000시간',
+    hoursValue: 2000,
   },
 ]
+
+/** Showreel control labels (Korean UI). */
+export const showreelUi = {
+  play: '동영상 재생',
+  pause: '일시정지',
+  mute: '음소거',
+  unmute: '소리 켜기',
+  seek: '재생 위치',
+  fullscreen: '전체 화면',
+  exitFullscreen: '전체 화면 종료',
+}
 
 /** Image registry — keys map to files under src/assets/images */
 export const imageKeys = {

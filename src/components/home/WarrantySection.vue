@@ -1,12 +1,43 @@
 <script setup lang="ts">
+import { computed, ref } from 'vue'
 import { siteMeta, warrantyItems } from '@/data/site'
 import { contactGet } from '@/data/contact'
 import { assetUrl, assetSize } from '@/utils/assets'
+import { useCountUp } from '@/composables/useCountUp'
 import AppButton from '@/components/common/AppButton.vue'
 
 const contact = contactGet()
 const bg = assetUrl('warrantyBg')
 const bgSize = assetSize('warrantyBg')
+const panelRef = ref<HTMLElement | null>(null)
+
+const counters = warrantyItems.map((item) => {
+  const years = useCountUp(item.yearsValue, {
+    triggerRef: panelRef,
+    initial: item.yearsValue,
+    duration: 900,
+  })
+  const hours = useCountUp(item.hoursValue, {
+    triggerRef: panelRef,
+    initial: item.hoursValue,
+    duration: 1100,
+  })
+  return {
+    part: item.part,
+    yearsSuffix: item.years.replace(String(item.yearsValue), ''),
+    hoursSuffix: item.hours.replace(item.hoursValue.toLocaleString('en-US'), ''),
+    years,
+    hours,
+  }
+})
+
+const rows = computed(() =>
+  counters.map((item) => ({
+    part: item.part,
+    yearsLabel: `${item.years.value.value}${item.yearsSuffix}`,
+    hoursLabel: `또는 ${item.hours.value.value.toLocaleString('en-US')}${item.hoursSuffix}`,
+  })),
+)
 </script>
 
 <template>
@@ -43,16 +74,16 @@ const bgSize = assetSize('warrantyBg')
         </div>
       </div>
 
-      <div class="warranty__panel" v-reveal>
+      <div ref="panelRef" class="warranty__panel" v-reveal>
         <p class="panel-title">부품별 무상 AS 기간</p>
         <div
-          v-for="item in warrantyItems"
+          v-for="item in rows"
           :key="item.part"
-          class="as-row"
+          class="as-row lift-hover"
         >
           <p class="as-row__part">{{ item.part }}</p>
-          <p class="as-row__years display tabular">{{ item.years }}</p>
-          <p class="as-row__hours tabular">또는 {{ item.hours }}</p>
+          <p class="as-row__years display tabular">{{ item.yearsLabel }}</p>
+          <p class="as-row__hours tabular">{{ item.hoursLabel }}</p>
         </div>
         <AppButton to="/counsel" class="panel-cta">상담 안내</AppButton>
       </div>
@@ -149,13 +180,22 @@ const bgSize = assetSize('warrantyBg')
 .as-row {
   display: grid;
   gap: 0.35rem;
-  padding-bottom: var(--space-4);
+  padding: var(--space-3);
+  margin: 0 calc(var(--space-3) * -1);
+  border: 1px solid transparent;
   border-bottom: 1px solid var(--line);
+  border-radius: var(--radius-md);
 }
 
 .as-row:last-of-type {
-  border-bottom: none;
-  padding-bottom: 0;
+  border-bottom-color: transparent;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .as-row.lift-hover:hover {
+    border-color: var(--line-strong);
+    background: rgba(255, 255, 255, 0.98);
+  }
 }
 
 .as-row__part {

@@ -94,6 +94,7 @@ table {
 [data-reveal] {
   opacity: 0;
   transform: translateY(28px);
+  transition-delay: 0s;
   transition:
     opacity var(--duration-slow) var(--ease-out),
     transform var(--duration-slow) var(--ease-out);
@@ -120,6 +121,19 @@ table {
   transform: translateX(0);
 }
 
+.lift-hover {
+  transition:
+    transform var(--duration) var(--ease-out),
+    border-color var(--duration) var(--ease-out),
+    box-shadow var(--duration) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .lift-hover:hover {
+    transform: translateY(-4px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -127,6 +141,13 @@ table {
 
   [data-reveal] {
     opacity: 1;
+    transform: none;
+    transition: none;
+    transition-delay: 0s !important;
+  }
+
+  .lift-hover,
+  .lift-hover:hover {
     transform: none;
     transition: none;
   }

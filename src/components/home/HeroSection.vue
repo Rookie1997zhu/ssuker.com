@@ -4,7 +4,9 @@ import { heroIndexes, heroMain, heroPromoMeta, heroPromoSlides } from '@/data/si
 import { assetUrl, assetSize } from '@/utils/assets'
 
 const promoActive = ref(0)
+const promoDir = ref<'next' | 'prev'>('next')
 let timer: number | undefined
+const PROMO_INTERVAL_MS = 5600
 
 const mainSrc = computed(() => assetUrl(heroMain.imageKey))
 const mainDim = computed(() => assetSize(heroMain.imageKey))
@@ -12,22 +14,34 @@ const mainDim = computed(() => assetSize(heroMain.imageKey))
 const currentPromo = computed(() => heroPromoSlides[promoActive.value])
 const promoSrc = computed(() => assetUrl(currentPromo.value.imageKey))
 const promoDim = computed(() => assetSize(currentPromo.value.imageKey))
+const promoSlideName = computed(() => (promoDir.value === 'next' ? 'slide-next' : 'slide-prev'))
 
 const promoCountLabel = computed(
   () =>
     `${String(promoActive.value + 1).padStart(2, '0')} / ${String(heroPromoSlides.length).padStart(2, '0')}`,
 )
 
+function startPromoTimer() {
+  if (timer) window.clearInterval(timer)
+  timer = window.setInterval(nextPromo, PROMO_INTERVAL_MS)
+}
+
 function nextPromo() {
+  promoDir.value = 'next'
   promoActive.value = (promoActive.value + 1) % heroPromoSlides.length
 }
 
 function goPromo(index: number) {
+  if (index === promoActive.value) return
+  const total = heroPromoSlides.length
+  const forward = (index - promoActive.value + total) % total
+  promoDir.value = forward <= total / 2 ? 'next' : 'prev'
   promoActive.value = index
+  startPromoTimer()
 }
 
 onMounted(() => {
-  timer = window.setInterval(nextPromo, 5600)
+  startPromoTimer()
 })
 
 onUnmounted(() => {
@@ -60,7 +74,7 @@ onUnmounted(() => {
 
         <div class="hero__promo">
           <div class="hero__promo-media" aria-hidden="true">
-            <Transition name="fade" mode="out-in">
+            <Transition :name="promoSlideName">
               <img
                 :key="currentPromo.id"
                 :src="promoSrc"
@@ -161,6 +175,7 @@ onUnmounted(() => {
 .hero__promo-media {
   position: absolute;
   inset: 0;
+  overflow: hidden;
 }
 
 .hero__img {
@@ -244,14 +259,43 @@ onUnmounted(() => {
   line-height: 1.45;
 }
 
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity var(--duration-slow) var(--ease-out);
+.slide-next-enter-active,
+.slide-next-leave-active,
+.slide-prev-enter-active,
+.slide-prev-leave-active {
+  transition: transform var(--duration-slow) var(--ease-out);
 }
 
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
+.slide-next-enter-from {
+  transform: translateX(100%);
+}
+
+.slide-next-leave-to {
+  transform: translateX(-100%);
+}
+
+.slide-prev-enter-from {
+  transform: translateX(-100%);
+}
+
+.slide-prev-leave-to {
+  transform: translateX(100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide-next-enter-active,
+  .slide-next-leave-active,
+  .slide-prev-enter-active,
+  .slide-prev-leave-active {
+    transition-duration: 1ms;
+  }
+
+  .slide-next-enter-from,
+  .slide-next-leave-to,
+  .slide-prev-enter-from,
+  .slide-prev-leave-to {
+    transform: none;
+  }
 }
 
 @media (max-width: 900px) {

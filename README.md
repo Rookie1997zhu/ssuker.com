@@ -30,8 +30,8 @@ npm run preview
 
 ### 배포 후 확인
 
-1. `https://ssuker.co.kr` 와 `https://www.ssuker.co.kr` 인증서/리다이렉트
-2. Google Search Console / Naver 웹마스터도구 에 사이트 등록 후 `https://ssuker.co.kr/sitemap.xml` 제출
+1. `https://www.ssuker.co.kr` HTTPS 정상 여부（apex `ssuker.co.kr` 证书签发完成后再切回主域）
+2. Google Search Console / Naver 웹마스터도구 에 사이트 등록 후 `https://www.ssuker.co.kr/sitemap.xml` 제출
 3. GA4 사용 시 전화·메일 클릭 이벤트 확인
 
 ## 기술 메모

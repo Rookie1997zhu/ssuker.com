@@ -26,12 +26,16 @@ const preloadMode = ref<'none' | 'metadata' | 'auto'>('metadata')
 const duration = ref(0)
 
 const showCenterPlay = computed(() => !isPlaying.value)
-const showPosterCover = computed(() => !hasFrame.value)
+/** Keep last decoded frame visible while buffering — do not flash the poster cover. */
+const showPosterCover = computed(() => !hasFrame.value && !isPlaying.value)
 
 function detectTapToPlay() {
-  const compact = window.matchMedia('(max-width: 900px)').matches
+  // Only force tap-to-play on real touch / no-hover devices (or Save-Data).
+  // Narrow desktop windows must still autoplay, otherwise the clip looks "missing".
+  const touchLike =
+    window.matchMedia('(hover: none)').matches || window.matchMedia('(pointer: coarse)').matches
   const connection = (navigator as Navigator & { connection?: NetworkConnection }).connection
-  return compact || Boolean(connection?.saveData)
+  return touchLike || Boolean(connection?.saveData)
 }
 
 function updateProgress() {
@@ -132,7 +136,8 @@ function seekFromEvent(event: MouseEvent) {
 
 let observer: IntersectionObserver | null = null
 let motionQuery: MediaQueryList | null = null
-let compactQuery: MediaQueryList | null = null
+let hoverQuery: MediaQueryList | null = null
+let pointerQuery: MediaQueryList | null = null
 
 function onMotionChange(event: MediaQueryListEvent) {
   prefersReducedMotion.value = event.matches
@@ -144,6 +149,7 @@ function onMotionChange(event: MediaQueryListEvent) {
 }
 
 function refreshTapToPlay() {
+  const wasTap = tapToPlay.value
   tapToPlay.value = detectTapToPlay()
   if (tapToPlay.value) {
     if (preloadMode.value !== 'auto') preloadMode.value = 'none'
@@ -152,6 +158,9 @@ function refreshTapToPlay() {
     }
   } else if (preloadMode.value === 'none') {
     preloadMode.value = 'metadata'
+    if (wasTap && isInView.value && !userPaused.value) {
+      void tryPlay()
+    }
   }
 }
 
@@ -160,9 +169,11 @@ onMounted(() => {
   prefersReducedMotion.value = motionQuery.matches
   motionQuery.addEventListener('change', onMotionChange)
 
-  compactQuery = window.matchMedia('(max-width: 900px)')
+  hoverQuery = window.matchMedia('(hover: none)')
+  pointerQuery = window.matchMedia('(pointer: coarse)')
   refreshTapToPlay()
-  compactQuery.addEventListener('change', refreshTapToPlay)
+  hoverQuery.addEventListener('change', refreshTapToPlay)
+  pointerQuery.addEventListener('change', refreshTapToPlay)
 
   observer = new IntersectionObserver(
     (entries) => {
@@ -178,7 +189,8 @@ onMounted(() => {
 onUnmounted(() => {
   observer?.disconnect()
   motionQuery?.removeEventListener('change', onMotionChange)
-  compactQuery?.removeEventListener('change', refreshTapToPlay)
+  hoverQuery?.removeEventListener('change', refreshTapToPlay)
+  pointerQuery?.removeEventListener('change', refreshTapToPlay)
 })
 
 watch(isInView, (visible) => {
@@ -211,7 +223,6 @@ watch(isInView, (visible) => {
       ref="stageRef"
       class="showreel__stage"
       :class="{ 'is-entered': hasEntered && !prefersReducedMotion }"
-      v-reveal
     >
       <video
         ref="videoRef"
@@ -228,7 +239,6 @@ watch(isInView, (visible) => {
         @loadeddata="markFrameReady"
         @canplay="markFrameReady"
         @playing="markFrameReady"
-        @waiting="hasFrame = false"
         @play="syncPlayingState"
         @pause="syncPlayingState"
       />
@@ -340,9 +350,12 @@ watch(isInView, (visible) => {
   margin: 0;
   width: 100vw;
   margin-inline: calc(50% - 50vw);
+  aspect-ratio: 16 / 9;
   max-height: min(78vh, calc(100vh - 22.5rem));
   overflow: hidden;
   background: #000;
+  /* Always visible — do not use v-reveal (opacity:0) or the stage looks like empty navy. */
+  opacity: 1;
 }
 
 .showreel__video,
@@ -350,8 +363,7 @@ watch(isInView, (visible) => {
   display: block;
   width: 100%;
   height: 100%;
-  max-height: min(78vh, calc(100vh - 22.5rem));
-  aspect-ratio: 16 / 9;
+  min-height: 12rem;
   object-fit: cover;
 }
 

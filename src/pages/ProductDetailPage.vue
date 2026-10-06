@@ -10,6 +10,7 @@ import ProductGallery from '@/components/product/ProductGallery.vue'
 import SpecTable from '@/components/product/SpecTable.vue'
 import PhotoGrid from '@/components/product/PhotoGrid.vue'
 import AppButton from '@/components/common/AppButton.vue'
+import DownloadCards from '@/components/common/DownloadCards.vue'
 
 const props = defineProps<{
   series: string
@@ -75,16 +76,8 @@ const seriesDownloads = computed(() =>
             <AppButton v-if="hasExtraMedia" :to="detailsPath" variant="ghost">
               세부 사진 보기
             </AppButton>
-            <AppButton
-              v-for="item in seriesDownloads"
-              :key="item.id"
-              :href="item.href"
-              variant="ghost"
-              external
-            >
-              {{ item.label }}
-            </AppButton>
           </div>
+          <DownloadCards :items="seriesDownloads" />
         </div>
       </div>
     </section>

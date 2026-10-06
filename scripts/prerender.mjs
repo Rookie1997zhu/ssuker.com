@@ -17,6 +17,7 @@ const routes = [
   '/',
   '/company',
   '/products',
+  '/downloads',
   '/products/premium',
   '/products/standard',
   '/products/premium/details',

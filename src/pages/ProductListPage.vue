@@ -1,19 +1,22 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import { productList } from '@/data/products'
-import { catalogDownloads } from '@/data/downloads'
+import { downloadList } from '@/data/downloads'
 import { assetUrl, assetSize } from '@/utils/assets'
 import PageBanner from '@/components/common/PageBanner.vue'
-import AppButton from '@/components/common/AppButton.vue'
+import DownloadCards from '@/components/common/DownloadCards.vue'
 
 const products = productList()
-const brochureDownloads = catalogDownloads()
+const downloads = downloadList()
 </script>
 
 <template>
   <div class="products-page">
     <PageBanner eyebrow="PRODUCT" title="제품 라인업" image-key="hero2" />
     <section class="section">
+      <div class="container download-band">
+        <DownloadCards :items="downloads" />
+      </div>
       <div class="container product-grid">
         <RouterLink
           v-for="item in products"
@@ -36,17 +39,6 @@ const brochureDownloads = catalogDownloads()
             <p>{{ item.summary }}</p>
           </div>
         </RouterLink>
-      </div>
-      <div v-if="brochureDownloads.length" class="container download-row">
-        <AppButton
-          v-for="item in brochureDownloads"
-          :key="item.id"
-          :href="item.href"
-          variant="ghost"
-          external
-        >
-          {{ item.label }}
-        </AppButton>
       </div>
     </section>
   </div>
@@ -91,11 +83,8 @@ const brochureDownloads = catalogDownloads()
   color: var(--text-secondary);
 }
 
-.download-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: var(--space-6);
+.download-band {
+  margin-bottom: var(--space-7);
 }
 
 @media (max-width: 900px) {

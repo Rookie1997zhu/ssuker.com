@@ -29,6 +29,10 @@ export const routeSeo: Record<string, PageSeo> = {
     title: `제품 안내 | ${siteMeta.brand}`,
     description: '1.5TON–3TON 보급형·고급형 전기지게차 라인업을 확인하세요.',
   },
+  '/downloads': {
+    title: `자료 | ${siteMeta.brand}`,
+    description: 'SSUKER CPD·CPC 브로셔와 CPD15 보급형 광고를 확인하세요.',
+  },
   '/products/standard': {
     title: `1.5TON-3TON 보급형 | ${siteMeta.brand}`,
     description: 'SSUKER 보급형 전기지게차 사양, 세부 사진, 현장 사진을 확인하세요.',

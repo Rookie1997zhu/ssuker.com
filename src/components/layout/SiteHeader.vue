@@ -33,6 +33,14 @@ function closeMenu() {
   hidden.value = false
 }
 
+function isItemActive(to: string, children?: ReadonlyArray<{ to: string }>) {
+  if (route.path === to || route.path.startsWith(`${to}/`)) return true
+  return (
+    children?.some((child) => route.path === child.to || route.path.startsWith(`${child.to}/`)) ??
+    false
+  )
+}
+
 onMounted(() => {
   onScroll()
   window.addEventListener('scroll', onScroll, { passive: true })
@@ -74,7 +82,9 @@ onUnmounted(() => {
             <RouterLink
               :to="item.to"
               class="nav__link"
-              :class="{ 'is-active': route.path === item.to || route.path.startsWith(`${item.to}/`) }"
+              :class="{
+                'is-active': isItemActive(item.to, 'children' in item ? item.children : undefined),
+              }"
             >
               {{ item.label }}
             </RouterLink>

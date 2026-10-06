@@ -23,6 +23,7 @@ export const navItems = [
     children: [
       { label: '1.5TON-3TON 보급형', to: '/products/standard' },
       { label: '1.5TON-3TON 고급형', to: '/products/premium' },
+      { label: '자료', to: '/downloads' },
     ],
   },
   { label: 'COUNSEL', to: '/counsel' },

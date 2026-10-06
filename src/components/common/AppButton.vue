@@ -5,6 +5,7 @@ defineProps<{
   to?: string
   href?: string
   variant?: 'primary' | 'ghost' | 'line'
+  external?: boolean
 }>()
 </script>
 
@@ -22,6 +23,8 @@ defineProps<{
     :href="href"
     class="btn"
     :class="`btn--${variant ?? 'primary'}`"
+    :target="external ? '_blank' : undefined"
+    :rel="external ? 'noopener' : undefined"
   >
     <slot />
   </a>

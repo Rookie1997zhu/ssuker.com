@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import { contactGet } from '@/data/contact'
+import { downloadList } from '@/data/downloads'
 import { navItems, siteMeta } from '@/data/site'
 
+const downloads = downloadList()
 const contact = contactGet()
 const hqAddress = contact.offices.find((office) => office.id === 'hq')?.address ?? siteMeta.address
 </script>
@@ -68,6 +70,9 @@ const hqAddress = contact.offices.find((office) => office.id === 'hq')?.address 
           </li>
           <li>
             <RouterLink to="/privacy">PRIVACY</RouterLink>
+          </li>
+          <li v-for="item in downloads" :key="item.id">
+            <a :href="item.href" target="_blank" rel="noopener">{{ item.label }}</a>
           </li>
         </ul>
       </div>

@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import { productList } from '@/data/products'
+import { catalogDownloads } from '@/data/downloads'
 import { assetUrl, assetSize } from '@/utils/assets'
 import PageBanner from '@/components/common/PageBanner.vue'
+import AppButton from '@/components/common/AppButton.vue'
 
 const products = productList()
+const brochureDownloads = catalogDownloads()
 </script>
 
 <template>
@@ -33,6 +36,17 @@ const products = productList()
             <p>{{ item.summary }}</p>
           </div>
         </RouterLink>
+      </div>
+      <div v-if="brochureDownloads.length" class="container download-row">
+        <AppButton
+          v-for="item in brochureDownloads"
+          :key="item.id"
+          :href="item.href"
+          variant="ghost"
+          external
+        >
+          {{ item.label }}
+        </AppButton>
       </div>
     </section>
   </div>
@@ -75,6 +89,13 @@ const products = productList()
 
 .product-card__body p:last-child {
   color: var(--text-secondary);
+}
+
+.download-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: var(--space-6);
 }
 
 @media (max-width: 900px) {

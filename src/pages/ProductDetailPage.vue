@@ -2,6 +2,7 @@
 import { computed, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
 import { productDetail } from '@/data/products'
+import { downloadsForSeries } from '@/data/downloads'
 import { premiumScenePhotos } from '@/data/premiumMedia'
 import { standardScenePhotos } from '@/data/standardMedia'
 import PageBanner from '@/components/common/PageBanner.vue'
@@ -46,6 +47,10 @@ watchEffect(() => {
 const bannerKey = computed(() =>
   product.value?.id === 'premium' ? ('thumbPremium' as const) : ('thumbStandard' as const),
 )
+
+const seriesDownloads = computed(() =>
+  product.value ? downloadsForSeries(product.value.id) : [],
+)
 </script>
 
 <template>
@@ -69,6 +74,15 @@ const bannerKey = computed(() =>
             <AppButton to="/counsel">상담 안내</AppButton>
             <AppButton v-if="hasExtraMedia" :to="detailsPath" variant="ghost">
               세부 사진 보기
+            </AppButton>
+            <AppButton
+              v-for="item in seriesDownloads"
+              :key="item.id"
+              :href="item.href"
+              variant="ghost"
+              external
+            >
+              {{ item.label }}
             </AppButton>
           </div>
         </div>
